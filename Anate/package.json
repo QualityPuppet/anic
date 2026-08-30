@@ -1,10 +1,12 @@
 {
-  "name": "anate-frontend",
-  "version": "0.0.0",
+  "name": "anate",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "scripts": {
+    "predev": "npm version patch",
     "dev": "vite",
+    "prebuild": "npm version minor",
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
     "build-only": "vite build",
