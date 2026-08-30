@@ -46,7 +46,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: production-build-artifact
-          path: ./Anate/dist
+          path: ./dist
         
   # Deployment job
   deploy:
@@ -57,12 +57,15 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: production-build-artifact
+          path: ./dist
+          
       - name: Deploy to GitHub Pages
         id: deployment
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./Anate/dist
-      - name: List Contents
-        if: always()
-        run: find
+          publish_dir: ./dist
