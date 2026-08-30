@@ -1,0 +1,38 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Launch ASP.NET Core",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build", // Ensures your .NET code compiles first
+      "program": "${workspaceFolder}/bin/Debug/net8.0/YourWebApp.dll", 
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "stopAtEntry": false,
+      "serverReadyAction": {
+        "action": "openExternally",
+        "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+      }
+    },
+    {
+      "name": "Launch Frontend (NPM)",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      // 1. Point runtimeExecutable directly to your NVM npm file
+      "runtimeExecutable": "/home/puppet/.nvm/versions/node/v24.13.1/bin/npm", 
+      // 2. Pass only the npm arguments here
+      "runtimeArgs": ["run", "dev"]
+    }
+  ],
+  "compounds": [
+    {
+      "name": "ASP.NET + NPM Dev",
+      "configurations": ["Launch ASP.NET Core", "Launch Frontend (NPM)"],
+      "stopAll": true
+    }
+  ]
+}
