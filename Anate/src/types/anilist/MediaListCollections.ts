@@ -1,6 +1,7 @@
 import { EnumType, jsonToGraphQLQuery, VariableType } from "json-to-graphql-query";
 import { StatusTypes } from "./StatusTypes";
 import localforage from "localforage";
+import { toRaw } from "vue";
 
 export interface IMediaListCollection {
     lists: MediaList[]
@@ -49,7 +50,7 @@ export class MediaListCollection implements IMediaListCollection {
             }
 
             const list = await this.getLists();
-            await localforage.setItem(this.storeKey(), list);
+            await localforage.setItem(this.storeKey(), toRaw(list));
             return list;
         }
         if (this.lists.length == 0) {

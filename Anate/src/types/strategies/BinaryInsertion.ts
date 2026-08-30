@@ -38,12 +38,10 @@ export class BinaryInsertionStrategy {
 
     sort(choice: number) {
         if (choice === 1) {
-            console.warn("high")
             this.Current.high = this.Current.mid - 1;
             this.Current.insertIndex = this.Current.mid;
         }
         else {
-            console.warn("low")
             this.Current.low = this.Current.mid + 1;
             this.Current.insertIndex = this.Current.mid + 1;
         }

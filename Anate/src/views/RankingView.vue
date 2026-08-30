@@ -173,7 +173,7 @@ async function score(winner: number) {
             <!-- TODO: Add idle state -->
             <el-col>
                 <el-progress :text-inside="true" :stroke-width="26" style="padding-bottom: 1rem"
-                    :percentage="(rankings?.InitialCollection.length ?? 1) / (rankings?.RankedStore.length ?? 1)" />
+                    :percentage="Math.ceil((rankings?.RankedStore.length ?? 1) / (rankings?.InitialCollection.length ?? 1))" />
             </el-col>
             <el-col :span="12">
                 <el-card>

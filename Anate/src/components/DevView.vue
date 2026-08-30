@@ -17,7 +17,6 @@ async function DebugTournament() {
 
 if (isDebug) {
     console.warn("Running in debug mode");
-    DebugTournament();
 }
 
 </script>
