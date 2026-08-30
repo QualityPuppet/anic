@@ -46,7 +46,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: production-build-artifact
-          path: ./dist
+          path: ./Anate/dist
         
   # Deployment job
   deploy:
@@ -61,7 +61,7 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: production-build-artifact
-          path: ./Anate/dist
+          path: ./dist
 
       - name: Deploy to GitHub Pages
         id: deployment
