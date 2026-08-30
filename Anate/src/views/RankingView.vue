@@ -32,17 +32,19 @@ onMounted(async () => {
 
     // messy messy.
     // sort that out later.
-    state.value.InitialCollection = new MediaListCollection(state.value.Username);
-    const flatList = await state.value.InitialCollection.getFlatList(true);
+    if (state.value.Username !== "") {
+        state.value.InitialCollection = new MediaListCollection(state.value.Username);
+        const flatList = await state.value.InitialCollection.getFlatList(true);
 
-    initialTreeData.value =
-        flatList.map(entry => ({
-            label: entry.media.title.english,
-            children:
-                Object.entries(entry.media).map(m => {
-                    return { id: m[0], label: m[1] }
-                })
-        }));
+        initialTreeData.value =
+            flatList.map(entry => ({
+                label: entry.media.title.english,
+                children:
+                    Object.entries(entry.media).map(m => {
+                        return { id: m[0], label: m[1] }
+                    })
+            }));
+    }
 
     document.addEventListener("keydown", rankingHotkeys)
 })
