@@ -6,9 +6,14 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: HomeView,
+      name: 'ranking',
+      component: () => import('../views/RankingView.vue')
     },
+    // {
+    //   path: '/',
+    //   name: 'home',
+    //   component: HomeView,
+    // },
     {
       path: '/about',
       name: 'about',
@@ -17,11 +22,7 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/AboutView.vue'),
     },
-    {
-      path: '/ranking',
-      name: 'ranking',
-      component: () => import('../views/RankingView.vue')
-    }
+
   ],
 })
 

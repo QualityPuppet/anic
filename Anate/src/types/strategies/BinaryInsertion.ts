@@ -1,5 +1,4 @@
 import type { Media } from "../anilist/MediaListCollections";
-import { Contest } from "./TournamentStrategy";
 
 export class BinaryInsertionStrategy {
     RankedStore: Media[] 
@@ -34,8 +33,6 @@ export class BinaryInsertionStrategy {
     }
 
     getContestMedia(): Media {
-        // console.log(this.Current)
-        // console.log(this.RankedStore[this.Current.mid])
         return this.RankedStore[this.Current.mid]!;
     }
 
@@ -49,7 +46,6 @@ export class BinaryInsertionStrategy {
             console.warn("low")
             this.Current.low = this.Current.mid + 1;
             this.Current.insertIndex = this.Current.mid + 1;
-            this.currentLog();
         }
 
         this.Current.mid = Math.floor((this.Current.low + this.Current.high) / 2)
@@ -58,21 +54,12 @@ export class BinaryInsertionStrategy {
 
             this.RankedStore.splice(this.Current.insertIndex, 0, this.Current.media)
             this.Current = this.nextItem()
-            console.log(this.RankedStore)
             this.ComparisonMedia = this.getContestMedia();
 
         } 
         else {
             this.ComparisonMedia = this.getContestMedia();
         }
-    }
-
-    currentLog() {
-        console.log("high - " + this.Current.high)
-        console.log("mid - " + this.Current.mid)
-        console.log("low - " + this.Current.low)
-        console.log("insert index - " + this.Current.insertIndex)
-        console.log("title - " + this.Current.high)
     }
 }
 

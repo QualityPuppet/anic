@@ -1,24 +1,25 @@
 <script setup lang="ts">
-import { MediaListCollection } from '@/types/anilist/MediaListCollections';
-import { TournamentStrategy } from '@/types/strategies/TournamentStrategy';
 import localforage from 'localforage';
 
 const isDebug = import.meta.env.DEV;
-console.warn("Running in debug mode");
+const state = defineModel();
 
 async function DebugTournament() {
     const lastUsedUsername: string = await localforage.getItem("lastUsedUsername") ?? "";
 
     if (!lastUsedUsername) {
-        console.log("ユザーネムーがない、あほか");
+        console.error("ユザーネムーがない、あほか");
     }
 
-    const mediaCollection = MediaListCollection.flattenLists(await new MediaListCollection(lastUsedUsername).getLocal());
-    const rankingStrategy = new TournamentStrategy(mediaCollection.map(m => m.media));
-    rankingStrategy.generatePairs();
+    // this used to have a MediaListCollection instantiation.
+    // it doesn't now, but who cares! this is for me to mess about in :D
 }
 
-DebugTournament();
+if (isDebug) {
+    console.warn("Running in debug mode");
+    DebugTournament();
+}
+
 </script>
 
 
@@ -27,6 +28,12 @@ DebugTournament();
         <el-collapse>
             <el-collapse-item title="dev panel">
                 <el-button @click="DebugTournament()">Debug Tournament</el-button>
+                <el-row>
+                    <h1>Backend Data:</h1>
+                </el-row>
+                <el-row>
+                    <pre>{{ state }}</pre>
+                </el-row>
             </el-collapse-item>
         </el-collapse>
     </div>

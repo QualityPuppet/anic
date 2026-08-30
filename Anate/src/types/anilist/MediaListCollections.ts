@@ -1,7 +1,6 @@
 import { EnumType, jsonToGraphQLQuery, VariableType } from "json-to-graphql-query";
 import { StatusTypes } from "./StatusTypes";
 import localforage from "localforage";
-import type { ContestRecord } from "../strategies/StrategyInterfaces";
 
 export interface IMediaListCollection {
     lists: MediaList[]
@@ -21,7 +20,6 @@ export interface Media {
     id: number
     title: Title
     status: string
-    contestRecords: ContestRecord[];
 }
 
 export interface Title {

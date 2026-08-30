@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, toRaw } from 'vue'
+import { ref, onMounted, toRaw, onBeforeUnmount } from 'vue'
 import { MediaListCollection } from '@/types/anilist/MediaListCollections';
 import type { IRankingState } from '@/types/RankingState';
 import type { ElTree } from 'element-plus';
@@ -10,7 +10,6 @@ import { BinaryInsertionStrategy } from '@/types/strategies/BinaryInsertion';
 
 const state = ref<IRankingState>({
     InitialCollection: null,
-    Rankings: null,
     TreeData: [],
     Username: "",
 })
@@ -44,7 +43,29 @@ onMounted(async () => {
                     return { id: m[0], label: m[1] }
                 })
         }));
+
+    document.addEventListener("keydown", rankingHotkeys)
 })
+
+onBeforeUnmount(async () => {
+    document.removeEventListener("keydown", rankingHotkeys)
+})
+
+function rankingHotkeys(evt: KeyboardEvent) {
+    //TODO: Review, is it possible to be in a state where this causes an error?
+    if (!rankings.value?.Current || !rankings.value.ComparisonMedia) {
+        return;
+    }
+
+    //TODO: This only works on compatible keyboards.
+    //dunno who wouldn't have left and right arrows in the same place, but that's a me problem
+    if (evt.code === "ArrowLeft" || evt.key === "ArrowLeft") {
+        score(1)
+    }
+    if (evt.code === "ArrowRight" || evt.key === "ArrowRight") {
+        score(2)
+    }
+}
 
 function storeUsername() {
     if (!state.value.Username) {
@@ -129,14 +150,13 @@ async function score(winner: number) {
     const rankedStore = rankings.value?.RankedStore;
     rankingTreeData.value = rankedStore?.map(r => ({ label: r.title.english, children: [] }));
 
-
     await localforage.setItem("rankings", toRaw(rankedStore))
 }
 </script>
 
 <template>
     <div>
-        <dev-view />
+        <dev-view v-model="state" />
         <el-row>
             {{ new Date().toISOString() }}
         </el-row>
@@ -147,16 +167,20 @@ async function score(winner: number) {
             <el-button @click="start">始まる</el-button>
             <el-button @click="continueSort">続く</el-button>
         </el-row>
-        <el-row>
+        <el-row v-if="rankings?.Current">
             <!-- TODO: Add idle state -->
-            <el-col :span="12" v-if="state.Rankings?.CurrentPair !== null">
+            <el-col>
+                <el-progress :text-inside="true" :stroke-width="26" style="padding-bottom: 1rem"
+                    :percentage="(rankings?.InitialCollection.length ?? 1) / (rankings?.RankedStore.length ?? 1)" />
+            </el-col>
+            <el-col :span="12">
                 <el-card>
                     <el-button @click="() => { score(1) }">
                         {{ rankings?.Current.media.title.english }}
                     </el-button>
                 </el-card>
             </el-col>
-            <el-col :span="12" v-if="state.Rankings?.CurrentPair !== null">
+            <el-col :span="12">
                 <el-card>
                     <el-button @click="() => { score(2) }">
                         {{ rankings?.ComparisonMedia?.title.english }}
@@ -177,18 +201,10 @@ async function score(winner: number) {
                     <el-card>
                         <!-- TODO: Replace empty state-->
                         <div v-if="!rankingTreeData">テヘ :3</div>
-                        <el-tree v-if="rankingTreeData != null" ref="rankingTree" :data="rankingTreeData" />
+                        <el-tree v-if="rankingTreeData" ref="rankingTree" :data="rankingTreeData" />
                     </el-card>
                 </el-splitter-panel>
             </el-splitter>
-        </el-row>
-
-        <!-- debug, remove later or smth-->
-        <el-row>
-            <h1>Backend Data:</h1>
-        </el-row>
-        <el-row>
-            <pre>{{ state }}</pre>
         </el-row>
     </div>
 </template>
