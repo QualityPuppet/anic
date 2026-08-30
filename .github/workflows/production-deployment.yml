@@ -61,8 +61,8 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: production-build-artifact
-          path: ./dist
-          
+          path: ./Anate/dist
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: peaceiris/actions-gh-pages@v4
