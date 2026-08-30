@@ -65,4 +65,4 @@ jobs:
           publish_dir: ./Anate/dist
       - name: List Contents
         if: always()
-        run: ls -r
+        run: find
