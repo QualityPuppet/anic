@@ -1,0 +1,1 @@
+import{f as e,g as t,l as n}from"./index--2h0OBbf.js";var r=e({__name:`StatisticsView`,setup(e){return(e,r)=>(t(),n(`div`,null,` Base page for automating statistics bell curve `))}});export{r as default};
