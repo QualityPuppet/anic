@@ -224,7 +224,7 @@ const progress = computed(() => {
                                     <span>{{ node.label }}</span>
                                     <div v-if="editMode">
                                         <el-button type="danger" style="margin-left: 4px !important" link
-                                            @click="remove(node, data)">Remove</el-button>
+                                            @click="remove(node)">Remove</el-button>
                                     </div>
                                 </div>
                             </template>
