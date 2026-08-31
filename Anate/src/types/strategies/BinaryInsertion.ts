@@ -1,11 +1,13 @@
 import type { NodeDropType } from "element-plus";
 import type { Media } from "../anilist/MediaListCollections";
+import { useRankingStore } from "@/stores/rankings";
 
 export class BinaryInsertionStrategy {
     RankedStore: Media[] 
     InitialCollection: Media[]
     Current: MediaMerge;
     ComparisonMedia: Media;
+    Store = useRankingStore();
 
 
     constructor(initialCollection: Media[]) {
@@ -27,10 +29,10 @@ export class BinaryInsertionStrategy {
         // Avoid borked merges by just restarting the sort.
         this.Current = this.nextItem();
         this.ComparisonMedia = this.getContestMedia();
+        this.Store.rankings = this.RankedStore;
     }
 
     nextItem(): MediaMerge {
-        console.warn(this.RankedStore)
         const next = this.InitialCollection.find(m => !this.RankedStore.some(r => r.id === m.id))!
         const high = this.RankedStore.length > 1 ? this.RankedStore.length : 1;
         return new MediaMerge(next, high)
@@ -50,6 +52,8 @@ export class BinaryInsertionStrategy {
 
         this.Current = this.nextItem();
         this.ComparisonMedia = this.getContestMedia();
+        // TODO: I'm doing things in a lot of places, I would quite like to not have to repeat code like I currently am
+        this.Store.rankings = this.RankedStore;
     }
 
     sort(choice: number) {
@@ -70,6 +74,7 @@ export class BinaryInsertionStrategy {
             this.Current = this.nextItem()
             this.ComparisonMedia = this.getContestMedia();
 
+            this.Store.rankings = this.RankedStore;
         } 
         else {
             this.ComparisonMedia = this.getContestMedia();

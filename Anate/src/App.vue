@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
+import DevView from '@/components/DevView.vue';
 const version = __APP_VERSION__;
 </script>
 
@@ -12,14 +13,18 @@ const version = __APP_VERSION__;
             <RouterLink to="/">Ranking</RouterLink>
           </el-menu-item>
           <el-menu-item index="1">
-            <RouterLink to="/about">About</RouterLink>
+            <RouterLink to="/statistics">Statistics</RouterLink>
           </el-menu-item>
           <el-menu-item index="2">
+            <RouterLink to="/about">About</RouterLink>
+          </el-menu-item>
+          <el-menu-item index="3">
             Version - {{ version }}
           </el-menu-item>
         </el-menu>
       </el-header>
       <el-main>
+        <DevView />
         <RouterView />
       </el-main>
     </el-container>

@@ -3,7 +3,6 @@ import { ref, onMounted, toRaw, onBeforeUnmount, computed } from 'vue'
 import { MediaListCollection, type Media } from '@/types/anilist/MediaListCollections';
 import type { RankingState } from '@/types/RankingState';
 import type { AllowDropType, ElTree, NodeDropType, TreeInstance, TreeNode } from 'element-plus';
-import DevView from '@/components/DevView.vue';
 import localforage from 'localforage';
 import { BinaryInsertionStrategy } from '@/types/strategies/BinaryInsertion';
 import { WarnTriangleFilled } from '@element-plus/icons-vue'
@@ -102,10 +101,10 @@ async function anilistLoad() {
     storeUsername();
 
     const collection = new MediaListCollection(state.value.Username);
-    const flatList = await collection.getFlatList();
+    const list = await collection.getFlatList();
 
     initialTreeData.value =
-        flatList.map(entry => ({
+        list.map(entry => ({
             label: entry.media.title.english,
             children: [
                 {
@@ -116,6 +115,8 @@ async function anilistLoad() {
             ]
         }))
 
+    rankings.value = new BinaryInsertionStrategy(list.map(m => m.media));
+    rankingTreeData.value = rankings.value.RankedStore?.map(r => ({ label: r.title.english, children: [] }));
 
     state.value.Loading = false;
 }
@@ -132,10 +133,13 @@ async function remove(data: TreeNode) {
     rankingTree.value?.remove(data);
 }
 
-const allowDrop = (draggingNode: Node, dropNode: Node, type: AllowDropType) => {
+// a and b need to be defined for the event.
+// the other option is to pass in <null, null, type>, but that just shifts the bad code elsewhere
+const allowDrop = (_a: never, _b: never, type: AllowDropType) => {
     return type !== 'inner'
 }
 const handleDrop = async (
+    // TODO: just replace this with your own type, typescript won't know lmao
     // Skill issue on the part of the element-plus developers.
     // Their examples use `Node`, `Node` is an in-built type that doesn't have a `data` field.
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -158,7 +162,6 @@ const progress = computed(() => {
 
 <template>
     <div>
-        <dev-view v-model="state" />
         <el-row>
             <el-input style="width: 40%" v-model="state.Username" v-on:keyup.enter="anilistLoad"
                 class="input-group-button" placeholder="Input Username">
@@ -219,7 +222,7 @@ const progress = computed(() => {
                         <div v-if="!rankingTreeData">テヘ :3</div>
                         <el-tree v-if="rankingTreeData" ref="rankingTree" :data="rankingTreeData" :draggable="editMode"
                             :allow-drop="allowDrop" @node-drop="handleDrop">
-                            <template #default="{ node, data }">
+                            <template #default="{ node }">
                                 <div class="editable-tree-node">
                                     <span>{{ node.label }}</span>
                                     <div v-if="editMode">
