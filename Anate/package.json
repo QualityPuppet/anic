@@ -1,6 +1,6 @@
 {
   "name": "anate",
-  "version": "0.3.1",
+  "version": "1.0.9",
   "private": true,
   "type": "module",
   "scripts": {
@@ -17,10 +17,17 @@
     "format": "prettier --write --experimental-cli src/"
   },
   "dependencies": {
+    "@element-plus/icons-vue": "^2.3.2",
+    "@fortawesome/fontawesome-svg-core": "^7.3.1",
+    "@fortawesome/free-brands-svg-icons": "^7.3.1",
+    "@fortawesome/free-regular-svg-icons": "^7.3.1",
+    "@fortawesome/free-solid-svg-icons": "^7.3.1",
+    "@fortawesome/vue-fontawesome": "^3.3.3",
     "element-plus": "^2.14.4",
     "json-to-graphql-query": "^2.3.0",
     "localforage": "^1.10.0",
     "pinia": "^4.0.2",
+    "sass-embedded": "^1.103.1",
     "vue": "^3.5.40",
     "vue-router": "^5.2.0"
   },

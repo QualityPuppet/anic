@@ -19,5 +19,12 @@ export default defineConfig({
   },
   define: {
     __APP_VERSION__: JSON.stringify(JSON.parse(readFileSync('./package.json', 'utf-8')).version),
+  },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        //additionalData: `@use "~/styles/index.scss" as *;`,
+      }
+    }
   }
 })

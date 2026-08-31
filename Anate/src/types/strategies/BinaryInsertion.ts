@@ -1,3 +1,4 @@
+import type { NodeDropType } from "element-plus";
 import type { Media } from "../anilist/MediaListCollections";
 
 export class BinaryInsertionStrategy {
@@ -20,13 +21,16 @@ export class BinaryInsertionStrategy {
     }
 
     populateFromSaved(rankedStore: Media[]) {
-        this.RankedStore = rankedStore;
+        if (this.RankedStore.length > 0) {
+            this.RankedStore = rankedStore;
+        }
         // Avoid borked merges by just restarting the sort.
         this.Current = this.nextItem();
         this.ComparisonMedia = this.getContestMedia();
     }
 
     nextItem(): MediaMerge {
+        console.warn(this.RankedStore)
         const next = this.InitialCollection.find(m => !this.RankedStore.some(r => r.id === m.id))!
         const high = this.RankedStore.length > 1 ? this.RankedStore.length : 1;
         return new MediaMerge(next, high)
@@ -34,6 +38,18 @@ export class BinaryInsertionStrategy {
 
     getContestMedia(): Media {
         return this.RankedStore[this.Current.mid]!;
+    }
+
+    shift(draggedLabel: string, droppedLabel: string,  dropType: NodeDropType) {
+        const dragged = this.RankedStore.find(r => r.title.english == draggedLabel)!;
+        this.RankedStore.splice(this.RankedStore.findIndex(r => r.title.english == draggedLabel), 1)
+
+        const dropped = this.RankedStore.findIndex(r => r.title.english == droppedLabel)!;
+        const shift = dropType == "before" ? 0 : 1;
+        this.RankedStore.splice(dropped + shift, 0, dragged);
+
+        this.Current = this.nextItem();
+        this.ComparisonMedia = this.getContestMedia();
     }
 
     sort(choice: number) {

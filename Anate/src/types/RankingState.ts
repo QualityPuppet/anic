@@ -1,8 +1,7 @@
 import { MediaListCollection, type Media } from "./anilist/MediaListCollections";
-import type { RankNode } from "./RankNode";
 
-export interface IRankingState {
+export interface RankingState {
     InitialCollection: MediaListCollection | null,
-    TreeData: RankNode[],
-    Username: string
+    Username: string,
+    Loading: boolean
 }
