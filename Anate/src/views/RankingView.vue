@@ -172,21 +172,37 @@ const progress = computed(() => {
             </el-input>
 
         </el-row>
-        <el-row v-if="rankings?.Current">
+        <el-row v-if="rankings?.Current" justify="space-between">
             <!-- TODO: Add idle state -->
             <el-col>
                 <el-progress :text-inside="true" :stroke-width="26" style="padding-bottom: 1rem"
                     :percentage="progress" />
             </el-col>
             <el-col :span="12">
-                <el-card>
+                <el-card justify="space-between">
                     <el-button @click="() => { score(1) }">
                         {{ rankings?.Current.media.title.english }}
                     </el-button>
+                    <el-tooltip>
+                        <template #content>
+                            <span>Tap the left arrow key to pick this option</span>
+                        </template>
+                        <el-icon>
+                            <DArrowLeft />
+                        </el-icon>
+                    </el-tooltip>
                 </el-card>
             </el-col>
             <el-col :span="12">
-                <el-card>
+                <el-card justify="space-between">
+                    <el-tooltip>
+                        <template #content>
+                            <span>Tap the right arrow key to pick this option</span>
+                        </template>
+                        <el-icon>
+                            <DArrowRight />
+                        </el-icon>
+                    </el-tooltip>
                     <el-button @click="() => { score(2) }">
                         {{ rankings?.ComparisonMedia?.title.english }}
                     </el-button>
