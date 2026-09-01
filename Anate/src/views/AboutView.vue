@@ -112,6 +112,11 @@ const version = getVersion(__APP_VERSION__);
               clean up some bugs and CSS flaws, then get the anilist sync code working for what, in theory, is a
               finished product.
             </p>
+            <br />
+            <p>
+              Feel free to take a look at the current things I want to implement <a target="_blank"
+                href="https://github.com/users/QualityPuppet/projects/2/views/5">here</a>!
+            </p>
           </el-text>
         </el-row>
         <!-- TODO: There's gotta be a better way to do this. -->
