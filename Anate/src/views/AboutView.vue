@@ -2,6 +2,7 @@
 import { computed, onMounted, ref } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faEarthAsia, faEarthEurope } from '@fortawesome/free-solid-svg-icons'
+import getVersion from '@/types/versioning';
 
 
 const quotes = [
@@ -12,22 +13,39 @@ const quotes = [
   "天上天下唯我独尊",
   "Nah, I'd win",
   "WE'RE HAVING A MOMENT HERE!",
-  "A wise man once said, any anime where they jump in the OP is a god-tier anime. (A/N... D/N? - Ryo has questionable taste)",
+  "絶対気分いいだろうなああああああ。。。ドンドンドン",
   "アウラ、自歳しろう"
 ]
 
 const currentQuote = ref("");
 const quote = computed(() => currentQuote)
+let usedQuotes: string[] = [];
 
 const japanese = ref(false);
 
+
 onMounted(() => {
-  getQuote();
+  getQuote(true);
 })
 
-function getQuote() {
-  currentQuote.value = quotes[Math.floor(Math.random() * quotes.length)]!;
+// I'd default this, except the click event passes through an entire click event.
+// Click events aren't falsey btw :(
+// This is a lot of effort to go through just to ensure someone always sees a new quote, but you know what? worth it.
+function getQuote(firstTimeRun: boolean) {
+
+  if (!firstTimeRun && quotes.every(q => usedQuotes.includes(q))) {
+    console.warn("clear")
+    usedQuotes = [];
+    usedQuotes.push(currentQuote.value);
+  }
+
+  const freshQuotes = quotes.filter(q => !usedQuotes.includes(q));
+  currentQuote.value = freshQuotes[Math.floor(Math.random() * freshQuotes.length)]!;
+  usedQuotes.push(currentQuote.value);
 }
+
+
+const version = getVersion(__APP_VERSION__);
 
 </script>
 
@@ -40,31 +58,45 @@ function getQuote() {
       <el-col :span="12">
         <el-row>
           <h1 v-if="!japanese">
-            <FontAwesomeIcon @click="japanese = !japanese" style="height: 1em; cursor:pointer" :icon="faEarthAsia" />
+            <FontAwesomeIcon @click="japanese = !japanese" class="clickable" :icon="faEarthAsia" />
             Hi! I'm <a href="https://www.github.com/QualityPuppet">Eve!</a>
           </h1>
           <h1 v-if="japanese">
-            <FontAwesomeIcon @click="japanese = !japanese" style="height: 1em; cursor:pointer" :icon="faEarthEurope" />
+            <FontAwesomeIcon @click="japanese = !japanese" class="clickable" :icon="faEarthEurope" />
             おはよう! 私は<a href="https://www.github.com/QualityPuppet">エビだよ!</a>
           </h1>
         </el-row>
         <el-row :span="12">
           <el-text size="large">
-            I enjoy watching anime and statistics, so I wanted to leverage <a href="https://malsync.moe/">MAL-Sync</a>
-            (and the coding knowledge I reportedly have) to make a programmatic way of sorting and
-            then statistically ranking the anime I've watched. <br />
-            As of August, this is the 1.0 version of the website, with the base skeleton and an binary sort algorithm
-            implemented, in the future ideally I'd like to implement a bell curve algorithm with parameters that can be
-            user-tweaked,
-            and visualised with charting.
+            <p>
+              I enjoy watching anime and statistics, so I wanted to leverage <a href="https://malsync.moe/">MAL-Sync</a>
+              (and the coding knowledge I reportedly have) to make a programmatic way of sorting and
+              then statistically ranking the anime I've watched.
+            </p>
+            <br />
+            <p>
+              As of September 2026, this is the <code>{{ version }}</code> version of the website.
+              Version <code>{{ getVersion("1.0.0") }} </code> to <code>{{ getVersion("1.3.1") }}</code> implemented the
+              base skeleton for the
+              website
+            </p>
+            <br />
+            <p>
+              <code>{{ version }}</code> implements a <code>statistics</code> page that leverages a
+              normal distribution to map out scores, with an aim to make that editable so the bell curve can be adjusted
+              to suit a user's scoring preferences (centred around an approximate average user score)
+              clean up some bugs and CSS flaws, then get the anilist sync code working for what, in theory, is a
+              finished product.
+            </p>
           </el-text>
         </el-row>
         <!-- TODO: There's gotta be a better way to do this. -->
         <br />
         <el-row :span="12" align="middle">
-          <!-- TODO: make this a class? -->
-          <RefreshRight @click="getQuote" style="cursor: pointer; height:1em; margin-right:0.5rem" />
-          {{ quote }}
+          <h2>
+            <RefreshRight @click="() => getQuote(false)" class="clickable" />
+            {{ quote }}
+          </h2>
         </el-row>
       </el-col>
     </el-row>
@@ -78,6 +110,12 @@ function getQuote() {
     display: flex;
     align-items: center;
   }
+}
+
+.clickable {
+  cursor: pointer;
+  height: 1em;
+  margin-right: 0.5rem
 }
 
 .avatar {
