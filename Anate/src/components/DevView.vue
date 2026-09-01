@@ -35,7 +35,7 @@ const loadTime = "Dev Panel - " + new Date().toISOString();
 
 <template>
     <div v-if="isDebug">
-        <el-collapse>
+        <el-collapse class="dev-panel">
             <el-collapse-item :title="loadTime">
                 <el-button @click="Debug()">Debug</el-button>
                 <el-button>Dark Mode Toggle (does nothing atm lol)</el-button>
@@ -52,3 +52,9 @@ const loadTime = "Dev Panel - " + new Date().toISOString();
         </el-collapse>
     </div>
 </template>
+
+<style lang="scss">
+.dev-panel {
+    background-color: darkred
+}
+</style>

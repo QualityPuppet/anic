@@ -1,14 +1,15 @@
 import type { NodeDropType } from "element-plus";
 import type { Media } from "../anilist/MediaListCollections";
 import { useRankingStore } from "@/stores/rankings";
+import type { SortItem, SortingStrategy } from "./StrategyInterface";
 
-export class BinaryInsertionStrategy {
+
+export default class BinaryInsertionStrategy implements SortingStrategy {
     RankedStore: Media[] 
     InitialCollection: Media[]
-    Current: MediaMerge;
+    Current: BinaryInsertionItem;
     ComparisonMedia: Media;
     Store = useRankingStore();
-
 
     constructor(initialCollection: Media[]) {
         this.RankedStore = [];
@@ -18,31 +19,35 @@ export class BinaryInsertionStrategy {
         // No. InitialCollection is _never_ undefined, it's literally impossible to FORCIBLY pass undefined,
         // let alone accidentally. うるせよ
         this.RankedStore[0] = initialCollection[0]!;
-        this.Current = this.nextItem();
+        this.Current = this.getUnsortedItem();
         this.ComparisonMedia = this.getContestMedia();
     }
 
-    populateFromSaved(rankedStore: Media[]) {
+    loadRankings(rankedStore: Media[]) {
         if (this.RankedStore.length > 0) {
             this.RankedStore = rankedStore;
         }
         // Avoid borked merges by just restarting the sort.
-        this.Current = this.nextItem();
+        this.nextItem()
+    }
+
+    nextItem() {
+        this.Current = this.getUnsortedItem()
         this.ComparisonMedia = this.getContestMedia();
         this.Store.rankings = this.RankedStore;
     }
 
-    nextItem(): MediaMerge {
+    getUnsortedItem(): BinaryInsertionItem {
         const next = this.InitialCollection.find(m => !this.RankedStore.some(r => r.id === m.id))!
         const high = this.RankedStore.length > 1 ? this.RankedStore.length : 1;
-        return new MediaMerge(next, high)
+        return new BinaryInsertionItem(next, high)
     }
 
     getContestMedia(): Media {
         return this.RankedStore[this.Current.mid]!;
     }
 
-    shift(draggedLabel: string, droppedLabel: string,  dropType: NodeDropType) {
+    shiftItems(draggedLabel: string, droppedLabel: string,  dropType: NodeDropType) {
         const dragged = this.RankedStore.find(r => r.title.english == draggedLabel)!;
         this.RankedStore.splice(this.RankedStore.findIndex(r => r.title.english == draggedLabel), 1)
 
@@ -50,10 +55,7 @@ export class BinaryInsertionStrategy {
         const shift = dropType == "before" ? 0 : 1;
         this.RankedStore.splice(dropped + shift, 0, dragged);
 
-        this.Current = this.nextItem();
-        this.ComparisonMedia = this.getContestMedia();
-        // TODO: I'm doing things in a lot of places, I would quite like to not have to repeat code like I currently am
-        this.Store.rankings = this.RankedStore;
+        this.nextItem()
     }
 
     sort(choice: number) {
@@ -71,10 +73,7 @@ export class BinaryInsertionStrategy {
         if (this.Current.low >= this.Current.high) {
 
             this.RankedStore.splice(this.Current.insertIndex, 0, this.Current.media)
-            this.Current = this.nextItem()
-            this.ComparisonMedia = this.getContestMedia();
-
-            this.Store.rankings = this.RankedStore;
+            this.nextItem();
         } 
         else {
             this.ComparisonMedia = this.getContestMedia();
@@ -82,7 +81,7 @@ export class BinaryInsertionStrategy {
     }
 }
 
-class MediaMerge {
+class BinaryInsertionItem implements SortItem  {
     media: Media
     high: number
     mid: number;
@@ -94,5 +93,4 @@ class MediaMerge {
         this.high = high;
         this.mid = Math.floor((this.low + this.high) / 2);
     }
-
 }

@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { ref, onMounted, toRaw, onBeforeUnmount, computed } from 'vue'
-import { MediaListCollection, type Media } from '@/types/anilist/MediaListCollections';
+import { MediaListCollection } from '@/types/anilist/MediaListCollections';
 import type { RankingState } from '@/types/RankingState';
 import type { AllowDropType, ElTree, NodeDropType, TreeInstance, TreeNode } from 'element-plus';
 import localforage from 'localforage';
-import { BinaryInsertionStrategy } from '@/types/strategies/BinaryInsertion';
+import BinaryInsertionStrategy from '@/types/strategies/BinaryInsertion';
 import { WarnTriangleFilled } from '@element-plus/icons-vue'
+import { useRankingStore } from '@/stores/rankings';
 
 
 const state = ref<RankingState>({
@@ -26,6 +27,7 @@ const rankingTreeData = ref()
 
 // revert this お願い
 const editMode = ref(true);
+const rankingStore = useRankingStore();
 
 
 onMounted(async () => {
@@ -39,9 +41,8 @@ onMounted(async () => {
     // sort that out later.
     if (state.value.Username !== "") {
         const collection = new MediaListCollection(state.value.Username);
-        const savedRankings = await localforage.getItem("rankings") as Media[];
+        const savedRankings = rankingStore.rankings;
         const list = await collection.getFlatList(Boolean(savedRankings));
-
         initialTreeData.value =
             list.map(entry => ({
                 label: entry.media.title.english,
@@ -57,7 +58,7 @@ onMounted(async () => {
         rankings.value = new BinaryInsertionStrategy(list.map(m => m.media));
 
         if (savedRankings) {
-            rankings.value.populateFromSaved(savedRankings!);
+            rankings.value.loadRankings(savedRankings!);
         }
 
         rankingTreeData.value = rankings.value.RankedStore?.map(r => ({ label: r.title.english, children: [] }));
@@ -148,7 +149,7 @@ const handleDrop = async (
     dropNode: any,
     dropType: Exclude<NodeDropType, 'none'>
 ) => {
-    rankings.value?.shift(draggingNode.data.label, dropNode.data.label, dropType);
+    rankings.value?.shiftItems(draggingNode.data.label, dropNode.data.label, dropType);
     await localforage.setItem("rankings", toRaw(rankings.value?.RankedStore));
 }
 
@@ -172,21 +173,37 @@ const progress = computed(() => {
             </el-input>
 
         </el-row>
-        <el-row v-if="rankings?.Current">
+        <el-row v-if="rankings?.Current" justify="space-between">
             <!-- TODO: Add idle state -->
             <el-col>
                 <el-progress :text-inside="true" :stroke-width="26" style="padding-bottom: 1rem"
                     :percentage="progress" />
             </el-col>
             <el-col :span="12">
-                <el-card>
+                <el-card justify="space-between">
                     <el-button @click="() => { score(1) }">
                         {{ rankings?.Current.media.title.english }}
                     </el-button>
+                    <el-tooltip>
+                        <template #content>
+                            <span>Tap the left arrow key to pick this option</span>
+                        </template>
+                        <el-icon>
+                            <DArrowLeft />
+                        </el-icon>
+                    </el-tooltip>
                 </el-card>
             </el-col>
             <el-col :span="12">
-                <el-card>
+                <el-card justify="space-between">
+                    <el-tooltip>
+                        <template #content>
+                            <span>Tap the right arrow key to pick this option</span>
+                        </template>
+                        <el-icon>
+                            <DArrowRight />
+                        </el-icon>
+                    </el-tooltip>
                     <el-button @click="() => { score(2) }">
                         {{ rankings?.ComparisonMedia?.title.english }}
                     </el-button>

@@ -1,12 +1,16 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
 import DevView from '@/components/DevView.vue';
+import { useRankingStore } from './stores/rankings';
+import getVersion from './types/versioning'
+
 const version = __APP_VERSION__;
+const rankingStore = useRankingStore();
 </script>
 
 <template>
   <div>
-    <el-container>
+    <el-container v-loading="!rankingStore || rankingStore.loading">
       <el-header class="el-header-override">
         <el-menu mode="horizontal" :ellipsis="false">
           <el-menu-item index="0">
@@ -19,7 +23,7 @@ const version = __APP_VERSION__;
             <RouterLink to="/about">About</RouterLink>
           </el-menu-item>
           <el-menu-item index="3">
-            Version - {{ version }}
+            Version - {{ getVersion(version) }}
           </el-menu-item>
         </el-menu>
       </el-header>
