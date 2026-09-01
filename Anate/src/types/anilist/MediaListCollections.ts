@@ -21,6 +21,7 @@ export interface Media {
     id: number
     title: Title
     status: string
+    score?: number
 }
 
 export interface Title {

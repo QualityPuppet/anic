@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { NamedPoint } from '@/types/charts/NamedPoint'
+import mapShowsToGaussianScores from '@/types/statistics/DistributionCalculator'
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -7,38 +9,57 @@ import {
     LineElement,
     Title,
     Tooltip,
-    Legend
+    Legend,
+    type ChartData,
+    type Point,
+    type TooltipItem,
 } from 'chart.js'
+import { onMounted } from 'vue'
 import { Line } from 'vue-chartjs'
 
 const props = defineProps(['distribution'])
-
-const data = {
-    labels: props.distribution.map(d => d[0]),
-    datasets: [
-        {
-            label: 'show data',
-            backgroundColor: '#f87979',
-            data: props.distribution.map(d => d[1])
-        }
-    ]
-}
-console.log(props.distribution)
-console.log(data)
-const data2 = {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-    datasets: [
-        {
-            label: 'Data One',
-            backgroundColor: '#f87979',
-            data: [40, 39, 10, 40, 39, 80, 40]
-        }
-    ]
-}
-
+// seems overkill but that's the genuine type being passed in. w/e.
+let data: ChartData<"line", (number | Point | null)[], unknown>;
 const options = {
     responsive: true,
-    maintainAspectRatio: true
+    aspectRatio: 3,
+    maintainAspectRatio: true,
+    scales: {
+        x: {
+            ticks: {
+                callback: (index: number) => {
+                    return index % 2 === 0 ? index : "";
+                }
+            }
+        }
+    },
+    plugins: {
+        tooltip: {
+            callbacks: {
+                title: function (context: TooltipItem<"line">[]) {
+                    const point = context[0]!.raw as NamedPoint;
+                    return `Name: ${point.name} (Score: ${point.x})`;
+                }
+            }
+        }
+    }
+}
+
+if (props.distribution) {
+    const mappedScores = mapShowsToGaussianScores(props.distribution, { minScore: 1, maxScore: 100, meanPlacement: 0.65, spread: 0.25 });
+    data = {
+        labels: [...mappedScores.keys()].map((k: number) => k + 1),
+        datasets: [
+            {
+                label: 'Score',
+                backgroundColor: '#f87979',
+                data: mappedScores.map((m, i) => { return { x: i + 1, y: m.score, name: m.title.english } as Point }),
+                tension: 0.3,
+                pointRadius: 5,
+                pointBorderWidth: 10
+            }
+        ]
+    }
 }
 
 
@@ -52,8 +73,20 @@ ChartJS.register(
     Legend
 )
 
+onMounted(() => {
+    console.log(data)
+})
+
 </script>
 
 <template>
-    <Line :data="data" :options="options" />
+    <!-- @vue-expect-error I am not sifting through the types in that error message to figure out what is going on in there. no. -->
+    <Line class="canvas-background" :data="data" :options="options" />
 </template>
+
+<style lang="scss">
+.canvas-background {
+    border-radius: 1em;
+    background-color: #1a1a1a
+}
+</style>

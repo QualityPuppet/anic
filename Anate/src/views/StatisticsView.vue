@@ -1,49 +1,36 @@
 <script setup lang="ts">
 import type { Media } from '@/types/anilist/MediaListCollections';
-import { StatusTypes } from '@/types/anilist/StatusTypes';
-import { onMounted } from 'vue';
-// TODO: Fix :(
-// @ts-expect-error "I'm not writing a d.ts file for that"
-import Statistics from 'statistics.js';
 import LineChart from '@/components/charts/LineChart.vue';
 
 
-//import { useRankingStore } from '@/stores/rankings';
+import { useRankingStore } from '@/stores/rankings';
+import { Chart } from 'chart.js';
 
-//const rankingStore = useRankingStore()
+const rankingStore = useRankingStore()
+Chart.defaults.backgroundColor = "#1d1e1f"
 
-const mediaList: Media[] = [
-    { id: 1, title: { english: "The Apothecary Diaries", romaji: "Kusuriya no Hitorigoto" }, status: StatusTypes.Completed },
-    { id: 2, title: { english: "Jujutsu Kaisen", romaji: "JJK" }, status: StatusTypes.Completed },
-    { id: 3, title: { english: "Frieren", romaji: "Sousou no Frieren" }, status: StatusTypes.Completed },
-    { id: 4, title: { english: "Tensura", romaji: "Tensei Shitara Suraimu Datta Ken" }, status: StatusTypes.Completed },
-    { id: 5, title: { english: "The Saga of Tanya the Evil", romaji: "Youjo Senki" }, status: StatusTypes.Completed }
-];
-const columns = {
-    id: 'ordinal',
-    position: 'interval'
-}
 
-const settings = {}
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let distribution: any[] = [];
+// const mediaList: Media[] = [
+//     { id: 1, title: { english: "The Apothecary Diaries", romaji: "Kusuriya no Hitorigoto" }, status: StatusTypes.Completed },
+//     { id: 2, title: { english: "Jujutsu Kaisen", romaji: "JJK" }, status: StatusTypes.Completed },
+//     { id: 3, title: { english: "Frieren", romaji: "Sousou no Frieren" }, status: StatusTypes.Completed },
+//     { id: 4, title: { english: "Tensura", romaji: "Tensei Shitara Suraimu Datta Ken" }, status: StatusTypes.Completed },
+//     { id: 5, title: { english: "The Saga of Tanya the Evil", romaji: "Youjo Senki" }, status: StatusTypes.Completed }
+// ];
 
-onMounted(() => {
-    const data = [];
-
-    for (const media in mediaList) {
-        data.push({ position: media, id: mediaList[media]?.id })
-    }
-    const stats = new Statistics(data, columns, settings);
-    distribution = Object.entries(stats.normalDistribution(0, 0.3)).map(d => [Number(d[0]), d[1]]).sort((a, b) => Number(a[0]) - Number(b[0]));
-    console.log(distribution);
-})
+// TODO: Check if rankings exist and give a splash page if not
+const distribution: Media[] = rankingStore.getImmutableStore!;
 
 </script>
 
 <template>
     <div>
-        Base page for automating statistics bell curve
-        <LineChart :distribution="distribution" />
+        <el-row span="12" style="height:50%" justify="center">
+            <div v-if="!distribution">
+                <h1>No anime has been ranked yet :(</h1>
+                <p style="font-size:10em; text-align:center">🥺</p>
+            </div>
+            <LineChart v-if="distribution" :distribution="distribution" />
+        </el-row>
     </div>
 </template>
