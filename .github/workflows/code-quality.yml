@@ -1,10 +1,10 @@
-name: Production Deployment
+name: Code Quality
 
 on:
   pull_request:
   push:
   workflow_dispatch:
-  
+
 permissions: {}
 jobs:
   prettier:
