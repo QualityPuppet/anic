@@ -47,7 +47,7 @@ jobs:
         with:
           name: production-build-artifact
           path: ./Anate/dist
-        
+
   # Deployment job
   deploy:
     name: Deploy
