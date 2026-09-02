@@ -1,1 +1,2 @@
 npm version minor
+npx lint-staged

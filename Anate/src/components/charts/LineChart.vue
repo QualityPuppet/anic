@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { NamedPoint } from '@/types/charts/NamedPoint'
-import mapShowsToGaussianScores from '@/types/statistics/DistributionCalculator'
+import type { NamedPoint } from "@/types/charts/NamedPoint";
+import mapShowsToGaussianScores from "@/types/statistics/DistributionCalculator";
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -12,12 +12,12 @@ import {
     Legend,
     type ChartData,
     type Point,
-    type TooltipItem,
-} from 'chart.js'
-import { onMounted } from 'vue'
-import { Line } from 'vue-chartjs'
+    type TooltipItem
+} from "chart.js";
+import { onMounted } from "vue";
+import { Line } from "vue-chartjs";
 
-const props = defineProps(['distribution'])
+const props = defineProps(["distribution"]);
 // seems overkill but that's the genuine type being passed in. w/e.
 let data: ChartData<"line", (number | Point | null)[], unknown>;
 const options = {
@@ -43,25 +43,35 @@ const options = {
             }
         }
     }
-}
+};
 
 if (props.distribution) {
-    const mappedScores = mapShowsToGaussianScores(props.distribution, { minScore: 1, maxScore: 100, meanPlacement: 0.65, spread: 0.25 });
+    const mappedScores = mapShowsToGaussianScores(props.distribution, {
+        minScore: 1,
+        maxScore: 100,
+        meanPlacement: 0.65,
+        spread: 0.25
+    });
     data = {
         labels: [...mappedScores.keys()].map((k: number) => k + 1),
         datasets: [
             {
-                label: 'Score',
-                backgroundColor: '#f87979',
-                data: mappedScores.map((m, i) => { return { x: i + 1, y: m.score, name: m.title.english } as Point }),
+                label: "Score",
+                backgroundColor: "#f87979",
+                data: mappedScores.map((m, i) => {
+                    return {
+                        x: i + 1,
+                        y: m.score,
+                        name: m.title.english
+                    } as Point;
+                }),
                 tension: 0.3,
                 pointRadius: 5,
                 pointBorderWidth: 10
             }
         ]
-    }
+    };
 }
-
 
 ChartJS.register(
     CategoryScale,
@@ -71,12 +81,11 @@ ChartJS.register(
     Title,
     Tooltip,
     Legend
-)
+);
 
 onMounted(() => {
-    console.log(data)
-})
-
+    console.log(data);
+});
 </script>
 
 <template>
@@ -87,6 +96,6 @@ onMounted(() => {
 <style lang="scss">
 .canvas-background {
     border-radius: 1em;
-    background-color: #1a1a1a
+    background-color: #1a1a1a;
 }
 </style>

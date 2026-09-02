@@ -1,10 +1,10 @@
-@import './base.css';
+@import "./base.css";
 
 #app {
-  font-weight: normal;
-  width:100%
+    font-weight: normal;
+    width: 100%;
 }
 
 a {
-  text-decoration: none;
+    text-decoration: none;
 }

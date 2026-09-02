@@ -1,11 +1,11 @@
 export enum StatusTypes {
-    Completed = 'COMPLETED',
+    Completed = "COMPLETED",
     // Are these the same thing? Yes.
     // Am I stupid enough for CURRENT to confuse me? also yes.
-    Current = 'CURRENT',
-    In_Progress = 'CURRENT',
-    Dropped = 'DROPPED',
-    Paused = 'PAUSED',
-    Planning = 'PLANNING',
-    Repeating = 'REPEATING'
+    Current = "CURRENT",
+    In_Progress = "CURRENT",
+    Dropped = "DROPPED",
+    Paused = "PAUSED",
+    Planning = "PLANNING",
+    Repeating = "REPEATING"
 }

@@ -2,19 +2,15 @@ import { type Config } from "prettier";
 
 const config: Config = {
     tabWidth: 4,
+    printWidth: 80,
+    tabs: false,
+    semicolons: true,
+    quotes: true,
+    quoteProps: consistent,
     trailingComma: "none",
-    printWidth: 80
+    bracketSameLine = false,
+    checkIgnorePragma: true,
+    vueIndentScriptAndStyle: true
 };
 
 export default config;
-
-/*
-charset = utf-8
-indent_size = 2
-indent_style = space
-insert_final_newline = true
-trim_trailing_whitespace = true
-end_of_line = lf
-max_line_length = 100
-
-*/

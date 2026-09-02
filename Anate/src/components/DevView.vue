@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useRankingStore } from '@/stores/rankings';
-import localforage from 'localforage';
+import { useRankingStore } from "@/stores/rankings";
+import localforage from "localforage";
 
 const isDebug = import.meta.env.DEV;
 // hm. dev panel doesn't actually work how it's intended to at the moment.
@@ -11,10 +11,11 @@ const state = defineModel();
 // const isDark = useDark()
 // const toggleDark = useToggle(isDark)
 
-const rankingStore = useRankingStore()
+const rankingStore = useRankingStore();
 
 async function Debug() {
-    const lastUsedUsername: string = await localforage.getItem("lastUsedUsername") ?? "";
+    const lastUsedUsername: string =
+        (await localforage.getItem("lastUsedUsername")) ?? "";
 
     if (!lastUsedUsername) {
         console.error("ユザーネムーがない、あほか");
@@ -22,7 +23,6 @@ async function Debug() {
 
     // this used to have a MediaListCollection instantiation.
     // it doesn't now, but who cares! this is for me to mess about in :D
-
 }
 
 if (isDebug) {
@@ -30,7 +30,6 @@ if (isDebug) {
 }
 
 const loadTime = "Dev Panel - " + new Date().toISOString();
-
 </script>
 
 <template>
@@ -55,6 +54,6 @@ const loadTime = "Dev Panel - " + new Date().toISOString();
 
 <style lang="scss">
 .dev-panel {
-    background-color: darkred
+    background-color: darkred;
 }
 </style>
