@@ -1,27 +1,30 @@
-import { computed, ref, toRaw } from 'vue'
-import { defineStore } from 'pinia'
-import type { Media } from '@/types/anilist/MediaListCollections'
-import localforage from 'localforage'
+import { computed, ref, toRaw } from "vue";
+import { defineStore } from "pinia";
+import type { Media } from "@/types/anilist/MediaListCollections";
+import localforage from "localforage";
 
-export const useRankingStore = defineStore('rankings', () => {
-  const rankings = ref<Media[]>()
-  const loading = ref(true);
+export const useRankingStore = defineStore("rankings", () => {
+    const rankings = ref<Media[]>();
+    const loading = ref(true);
 
-  localforage.getItem("rankings").then((r) =>{
-       const storedRankings = r as Media[] | null | undefined
-       if (storedRankings) {
-          rankings.value = storedRankings;
-        }
-  } ).finally(() => {
-    loading.value = false
-  })
+    localforage
+        .getItem("rankings")
+        .then((r) => {
+            const storedRankings = r as Media[] | null | undefined;
+            if (storedRankings) {
+                rankings.value = storedRankings;
+            }
+        })
+        .finally(() => {
+            loading.value = false;
+        });
 
-  const getImmutableStore = computed(() => {
-    const rawRankings = rankings.value?.map(m => toRaw(m));
-    return rawRankings;
-  });
-  
-  return { rankings, loading, getImmutableStore }
-})
+    const getImmutableStore = computed(() => {
+        const rawRankings = rankings.value?.map((m) => toRaw(m));
+        return rawRankings;
+    });
+
+    return { rankings, loading, getImmutableStore };
+});
 
 export type RankingStore = ReturnType<typeof useRankingStore>;
