@@ -13,4 +13,5 @@ jobs:
       - uses: actions/setup-node@v4
       - run: npm ci --only=dev
       - run: |
-          npx prettier . --check --no-editorconfig
+          npx prettier . --check --no-editorconfig;
+          npx run lint:oxlint
