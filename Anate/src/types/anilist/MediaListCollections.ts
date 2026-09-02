@@ -1,10 +1,14 @@
-import { EnumType, jsonToGraphQLQuery, VariableType } from "json-to-graphql-query";
+import {
+    EnumType,
+    jsonToGraphQLQuery,
+    VariableType
+} from "json-to-graphql-query";
 import { StatusTypes } from "./StatusTypes";
 import localforage from "localforage";
 import { toRaw } from "vue";
 
 export interface IMediaListCollection {
-    lists: MediaList[]
+    lists: MediaList[];
 }
 
 // why everything is so damned nested is beyond me :(
@@ -14,14 +18,14 @@ export interface MediaList {
 }
 
 export interface Entry {
-    media: Media
+    media: Media;
 }
 
 export interface Media {
-    id: number
-    title: Title
-    status: string
-    score?: number
+    id: number;
+    title: Title;
+    status: string;
+    score?: number;
 }
 
 export interface Title {
@@ -40,11 +44,13 @@ export class MediaListCollection implements IMediaListCollection {
     }
 
     async saveLocal() {
-        localforage.setItem(this.storeKey(), this.lists)
+        localforage.setItem(this.storeKey(), this.lists);
     }
 
     async getLocal(loadFromRemoteFallback = true): Promise<MediaList[]> {
-        const local: MediaList[] | null = await localforage.getItem(this.storeKey());
+        const local: MediaList[] | null = await localforage.getItem(
+            this.storeKey()
+        );
         if (!local) {
             if (!loadFromRemoteFallback) {
                 return [];
@@ -61,69 +67,70 @@ export class MediaListCollection implements IMediaListCollection {
     }
 
     async getLists() {
-        if (this.lists.length == 0){
+        if (this.lists.length == 0) {
             this.lists = await this.populateLists();
         }
         return this.lists;
     }
 
     async getFlatList(local: boolean = false) {
-        return local ? MediaListCollection.flattenLists(await this.getLocal()) : MediaListCollection.flattenLists(await this.getLists())
+        return local
+            ? MediaListCollection.flattenLists(await this.getLocal())
+            : MediaListCollection.flattenLists(await this.getLists());
     }
 
     static flattenLists = (lists: MediaList[]) =>
         lists.flatMap((l) => {
             l.entries.map((e) => {
-                e.media.status = l.name
-            })
+                e.media.status = l.name;
+            });
             return l.entries;
-        })
-    
+        });
 
     private async populateLists() {
-            // Interactive reference - https://anilist.co/graphiql - IMPORTANT, BECAUSE GRAPHQL IS CONFUSING
-            const queryObj = {
-                query: {
-                    __variables: { username: 'String' },
-                    MediaListCollection: {
-                        __args: {
-                            userName: new VariableType('username'),
-                            type: new EnumType('ANIME'),
-                            status_in: [
-                                new EnumType(StatusTypes.Completed),
-                                new EnumType(StatusTypes.Current)
-                            ]
-                        },
-                        lists: {
-                            // this is the name of the list, which in this case is divided into statuses
-                            name: true,
-                            // The data we pull back for each show
-                            // Media is nested because it's the actual show data, which is an entirely different object.
-                            // the personal data like status and score is held at the "entries" level, except for status, apparently, which is
-                            // deprecated. probably due to the top level status.
-                            entries: {
-                                media: {
-                                    id: true,
-                                    title: { english: true, romaji: true },
-                                    episodes: true
-                                }
+        // Interactive reference - https://anilist.co/graphiql - IMPORTANT, BECAUSE GRAPHQL IS CONFUSING
+        const queryObj = {
+            query: {
+                __variables: { username: "String" },
+                MediaListCollection: {
+                    __args: {
+                        userName: new VariableType("username"),
+                        type: new EnumType("ANIME"),
+                        status_in: [
+                            new EnumType(StatusTypes.Completed),
+                            new EnumType(StatusTypes.Current)
+                        ]
+                    },
+                    lists: {
+                        // this is the name of the list, which in this case is divided into statuses
+                        name: true,
+                        // The data we pull back for each show
+                        // Media is nested because it's the actual show data, which is an entirely different object.
+                        // the personal data like status and score is held at the "entries" level, except for status, apparently, which is
+                        // deprecated. probably due to the top level status.
+                        entries: {
+                            media: {
+                                id: true,
+                                title: { english: true, romaji: true },
+                                episodes: true
                             }
                         }
                     }
                 }
-            };
+            }
+        };
 
-            const payload = {
-                query: jsonToGraphQLQuery(queryObj), // Automatically turns it into a valid string
-                variables: { username: this.username }
-            };
+        const payload = {
+            query: jsonToGraphQLQuery(queryObj), // Automatically turns it into a valid string
+            variables: { username: this.username }
+        };
 
-            const shows = await fetch('https://graphql.anilist.co', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-            return (await shows.json()).data.MediaListCollection.lists as MediaList[];
+        const shows = await fetch("https://graphql.anilist.co", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+        return (await shows.json()).data.MediaListCollection
+            .lists as MediaList[];
     }
 }
-
