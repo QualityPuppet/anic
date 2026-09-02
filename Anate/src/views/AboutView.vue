@@ -1,73 +1,76 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { faEarthAsia, faEarthEurope } from "@fortawesome/free-solid-svg-icons";
-import getVersion from "@/types/versioning";
+    import { computed, onMounted, ref } from "vue";
+    import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+    import {
+        faEarthAsia,
+        faEarthEurope
+    } from "@fortawesome/free-solid-svg-icons";
+    import getVersion from "@/types/versioning";
 
-// these are all getting commented because my brain is a sieve, I'll forget where the quotes are from.
-const quotes = [
-    // warui suraimu janai yo!
-    "悪いスライムじゃないよ",
-    // 猫猫
-    "恋が女を美しくするのであれば",
-    // dunmesh, sorta
-    "To eat is the privilege of the living.",
-    // oh kami
-    "お、神よ。。。貴様を切り刻んで、豚の餌にしてやる",
-    // Above Heaven and Earth, I alone am the Honored One.
-    "天上天下唯我独尊",
-    // A/N: He did not
-    "Nah, I'd win",
-    // splat
-    "WE'RE HAVING A MOMENT HERE!",
-    // DONK DONK DONK
-    "絶対気分いいだろうなああああああ。。。ドンドンドン",
-    // Aura, kill yourself
-    "アウラ、自歳しろう",
-    // you know, it really is fascinating how well yet how poorly this translates, -te form is neat
-    // the lack of a proper future tense is painful though.
-    "花になって",
-    // it doesn't matter
-    "どうでもいいだろう",
-    // https://www.youtube.com/watch?v=F9H5gxH0QAs
-    "What if everyone around // Decided to go skipping all across the town?",
-    // HOUSHI MONO
-    "なんもねえ、なんもねえ、なんもねえよ俺ら。終わてる、終わてる、笑たら、殺すぞ",
-    // hot take (maybe lukewarm take idk) - solo levelling season 1 was peak, and it fell off a cliff in season 2
-    "交換",
-    // A/N: keikaku means plan
-    "All according to 計画",
-    "THE ONE PIEEEEEEEEEEEEEEEEECE. THE ONE PIECE IS REAAAAAAAAAAAAAAAAAAL.",
-    "I'm a perpetual ----ing motion machine"
-];
+    // these are all getting commented because my brain is a sieve, I'll forget where the quotes are from.
+    const quotes = [
+        // warui suraimu janai yo!
+        "悪いスライムじゃないよ",
+        // 猫猫
+        "恋が女を美しくするのであれば",
+        // dunmesh, sorta
+        "To eat is the privilege of the living.",
+        // oh kami
+        "お、神よ。。。貴様を切り刻んで、豚の餌にしてやる",
+        // Above Heaven and Earth, I alone am the Honored One.
+        "天上天下唯我独尊",
+        // A/N: He did not
+        "Nah, I'd win",
+        // splat
+        "WE'RE HAVING A MOMENT HERE!",
+        // DONK DONK DONK
+        "絶対気分いいだろうなああああああ。。。ドンドンドン",
+        // Aura, kill yourself
+        "アウラ、自歳しろう",
+        // you know, it really is fascinating how well yet how poorly this translates, -te form is neat
+        // the lack of a proper future tense is painful though.
+        "花になって",
+        // it doesn't matter
+        "どうでもいいだろう",
+        // https://www.youtube.com/watch?v=F9H5gxH0QAs
+        "What if everyone around // Decided to go skipping all across the town?",
+        // HOUSHI MONO
+        "なんもねえ、なんもねえ、なんもねえよ俺ら。終わてる、終わてる、笑たら、殺すぞ",
+        // hot take (maybe lukewarm take idk) - solo levelling season 1 was peak, and it fell off a cliff in season 2
+        "交換",
+        // A/N: keikaku means plan
+        "All according to 計画",
+        "THE ONE PIEEEEEEEEEEEEEEEEECE. THE ONE PIECE IS REAAAAAAAAAAAAAAAAAAL.",
+        "I'm a perpetual ----ing motion machine"
+    ];
 
-const currentQuote = ref("");
-const quote = computed(() => currentQuote);
-let usedQuotes: string[] = [];
+    const currentQuote = ref("");
+    const quote = computed(() => currentQuote);
+    let usedQuotes: string[] = [];
 
-const japanese = ref(false);
+    const japanese = ref(false);
 
-onMounted(() => {
-    getQuote(true);
-});
+    onMounted(() => {
+        getQuote(true);
+    });
 
-// I'd default this, except the click event passes through an entire click event.
-// Click events aren't falsey btw :(
-// This is a lot of effort to go through just to ensure someone always sees a new quote, but you know what? worth it.
-function getQuote(firstTimeRun: boolean) {
-    if (!firstTimeRun && quotes.every((q) => usedQuotes.includes(q))) {
-        console.warn("clear");
-        usedQuotes = [];
+    // I'd default this, except the click event passes through an entire click event.
+    // Click events aren't falsey btw :(
+    // This is a lot of effort to go through just to ensure someone always sees a new quote, but you know what? worth it.
+    function getQuote(firstTimeRun: boolean) {
+        if (!firstTimeRun && quotes.every((q) => usedQuotes.includes(q))) {
+            console.warn("clear");
+            usedQuotes = [];
+            usedQuotes.push(currentQuote.value);
+        }
+
+        const freshQuotes = quotes.filter((q) => !usedQuotes.includes(q));
+        currentQuote.value =
+            freshQuotes[Math.floor(Math.random() * freshQuotes.length)]!;
         usedQuotes.push(currentQuote.value);
     }
 
-    const freshQuotes = quotes.filter((q) => !usedQuotes.includes(q));
-    currentQuote.value =
-        freshQuotes[Math.floor(Math.random() * freshQuotes.length)]!;
-    usedQuotes.push(currentQuote.value);
-}
-
-const version = getVersion(__APP_VERSION__);
+    const version = getVersion(__APP_VERSION__);
 </script>
 
 <template>
@@ -160,22 +163,22 @@ const version = getVersion(__APP_VERSION__);
 </template>
 
 <style>
-@media (min-width: 1024px) {
-    .about {
-        /* min-height: 100vh; */
-        display: flex;
-        align-items: center;
+    @media (min-width: 1024px) {
+        .about {
+            /* min-height: 100vh; */
+            display: flex;
+            align-items: center;
+        }
     }
-}
 
-.clickable {
-    cursor: pointer;
-    height: 1em;
-    margin-right: 0.5rem;
-}
+    .clickable {
+        cursor: pointer;
+        height: 1em;
+        margin-right: 0.5rem;
+    }
 
-.avatar {
-    border-radius: 50% !important;
-    height: 10em;
-}
+    .avatar {
+        border-radius: 50% !important;
+        height: 10em;
+    }
 </style>
