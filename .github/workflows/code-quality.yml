@@ -11,6 +11,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
+      - run: npm ci --only=dev
       - run: |
-          npm i prettier --save-dev
           npx prettier . --check --no-editorconfig
