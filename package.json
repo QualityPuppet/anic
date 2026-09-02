@@ -1,0 +1,14 @@
+{
+  "devDependencies": {
+    "@types/node": "^26.4.1",
+    "eslint": "^10.9.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.5.2"
+  },
+  "scripts": {
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "jiti": "^2.7.0"
+  }
+}
