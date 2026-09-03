@@ -1,2 +1,2 @@
-npm version minor
+npm version minor --no-git-tag-version
 npx lint-staged

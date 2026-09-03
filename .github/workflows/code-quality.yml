@@ -15,5 +15,5 @@ jobs:
       - parallel:
           - name: prettier
             run: npx prettier . --check --no-editorconfig;
-          - name: oxlint/eslint
-            run: npx run lint:oxlint
+          - name: eslint
+            run: npm run lint
