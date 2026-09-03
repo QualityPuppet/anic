@@ -1,10 +1,10 @@
 import type { Media } from "../anilist/MediaListCollections";
 
 interface DistributionParameters {
-    minScore: number,
-    maxScore: number,
-    meanPlacement: number,
-    spread: number
+    minScore: number;
+    maxScore: number;
+    meanPlacement: number;
+    spread: number;
 }
 
 // A/N - I frankly have no clue how this works, this is taken from the internet.
@@ -15,24 +15,25 @@ interface DistributionParameters {
  * @param {Object} options - Configuration variables.
  * @param {number} options.minScore - The lowest score you want to assign (e.g., 1 or 10).
  * @param {number} options.maxScore - The highest score you want to assign (e.g., 10 or 100).
- * @param {number} options.meanPlacement - Controls where the "bunching" happens. 
+ * @param {number} options.meanPlacement - Controls where the "bunching" happens.
  *                                         0.5 = dead center, 0.7 = bunched near the top, 0.3 = bunched near the bottom.
- * @param {number} options.spread - Controls flattening vs. steepness. 
- *                                  Lower values (0.1 - 0.2) steepen the curve (bunching data tightly). 
+ * @param {number} options.spread - Controls flattening vs. steepness.
+ *                                  Lower values (0.1 - 0.2) steepen the curve (bunching data tightly).
  *                                  Higher values (0.4 - 0.6) flatten it out into a linear line.
  * @returns {Array} An array of objects containing the original show and its calculated score.
  */
 export default function mapShowsToGaussianScores(
-    list: Media[], 
-    { 
-        minScore = 1, 
-        maxScore = 100, 
-        meanPlacement = 0.5, 
-        spread = 0.25 
-    }: DistributionParameters): Media[] {
+    list: Media[],
+    {
+        minScore = 1,
+        maxScore = 100,
+        meanPlacement = 0.5,
+        spread = 0.25
+    }: DistributionParameters
+): Media[] {
     const N = list.length;
     if (N === 0) return [];
-    if (N === 1) return list;;
+    if (N === 1) return list;
 
     // Gaussian Cumulative Distribution Function
     function gaussianCDF(x: number, mean: number, sigma: number) {
@@ -48,7 +49,7 @@ export default function mapShowsToGaussianScores(
     return list.map((show: Media, index: number) => {
         // Normalize the rank position between 0 (best/top) and 1 (worst/bottom)
         // Reversed so index 0 gets the highest percentile
-        const percentile = 1 - (index / (N - 1));
+        const percentile = 1 - index / (N - 1);
 
         // Step 2: Calculate the raw Gaussian CDF value for this percentile
         const rawCDF = gaussianCDF(percentile, meanPlacement, spread);
@@ -57,9 +58,8 @@ export default function mapShowsToGaussianScores(
         const normalizedCDF = (rawCDF - cdfMin) / cdfRange;
         const score = minScore + normalizedCDF * (maxScore - minScore);
 
-        
-        show.score = Math.round(score * 10) / 10
-        return show
+        show.score = Math.round(score * 10) / 10;
+        return show;
     });
 }
 
@@ -78,7 +78,11 @@ function errorFunction(x: number) {
     const absX = Math.abs(x);
 
     const t = 1.0 / (1.0 + p * absX);
-    const y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-absX * absX);
+    const y =
+        1.0 -
+        ((((a5 * t + a4) * t + a3) * t + a2) * t + a1) *
+            t *
+            Math.exp(-absX * absX);
 
     return sign * y;
 }
