@@ -1,7 +1,6 @@
 name: Auto Version
 
 on:
-  push:
   pull_request:
     branches: ['rimuru', 'maomao', 'tanya', 'izutsumi', 'bocchi']
     types:
