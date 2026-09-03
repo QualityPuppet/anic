@@ -1,8 +1,8 @@
-name: Production Deployment
+name: Auto Version
 
 on:
   pull_request:
-    branches: ["rimuru", "maomao", "tanya", "izutsumi", "bocchi"]
+    branches: ['rimuru', 'maomao', 'tanya', 'izutsumi', 'bocchi']
     types:
       - closed
 
