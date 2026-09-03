@@ -1,12 +1,10 @@
 name: Auto Version
 
 on:
-  push:
   pull_request:
-    branches: ["rimuru", "maomao", "tanya", "izutsumi", "bocchi"]
+    branches: ['rimuru', 'maomao', 'tanya', 'izutsumi', 'bocchi']
     types:
       - closed
-  workflow_dispatch:
 
 permissions:
   contents: write
