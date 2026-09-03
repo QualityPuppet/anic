@@ -1,2 +1,2 @@
-npm version minor --prefix "./Anate" --no-git-tag-version
+npm version patch --prefix "./Anate" --no-git-tag-version
 npx lint-staged
