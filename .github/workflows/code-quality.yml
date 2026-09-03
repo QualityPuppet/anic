@@ -11,9 +11,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-      - run: npm ci --only=dev
+      - run: npm ci
       - parallel:
           - name: prettier
-            run: npx prettier . --check --no-editorconfig;
+            run: npx prettier . --check --no-editorconfig
           - name: eslint
             run: npm run lint
