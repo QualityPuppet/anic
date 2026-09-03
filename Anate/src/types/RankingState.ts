@@ -1,7 +1,4 @@
-import type {
-    Media,
-    MediaListCollection
-} from "./anilist/MediaListCollections";
+import type { MediaListCollection } from "./anilist/MediaListCollections";
 
 export interface RankingState {
     InitialCollection: MediaListCollection | null;

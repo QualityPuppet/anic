@@ -1,3 +1,5 @@
+// oxlint-disable typescript/no-duplicate-enum-values
+// I'm using a duplicate enum value on purpose.
 export enum StatusTypes {
     Completed = "COMPLETED",
     // Are these the same thing? Yes.

@@ -3,12 +3,11 @@ import * as ElementPlusIconsVue from "@element-plus/icons-vue";
 // I don't care about the package size. not my problem.
 import ElementPlus from "element-plus";
 import { createPinia, type StateTree } from "pinia";
-import { createApp, toRaw } from "vue";
+import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router/index.ts";
 import "element-plus/dist/index.css";
 import "element-plus/theme-chalk/dark/css-vars.css";
-import { Chart } from "chart.js";
 import localforage from "localforage";
 
 const app = createApp(App);

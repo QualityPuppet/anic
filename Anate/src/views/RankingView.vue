@@ -179,7 +179,7 @@
         const ranked = rankings.value?.RankedStore.length ?? 0;
         const total = rankings.value?.InitialCollection.length ?? 0;
 
-        return ranked == 0 || total == 0
+        return ranked === 0 || total === 0
             ? 0
             : Math.ceil((ranked / total) * 100);
     });

@@ -60,14 +60,14 @@ export class MediaListCollection implements IMediaListCollection {
             await localforage.setItem(this.storeKey(), toRaw(list));
             return list;
         }
-        if (this.lists.length == 0) {
+        if (this.lists.length === 0) {
             this.lists = local;
         }
         return local;
     }
 
     async getLists() {
-        if (this.lists.length == 0) {
+        if (this.lists.length === 0) {
             this.lists = await this.populateLists();
         }
         return this.lists;
