@@ -1,2 +1,3 @@
 npm version patch --prefix "./Anate" --no-git-tag-version
+git add .
 npx lint-staged
