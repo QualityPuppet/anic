@@ -3,7 +3,7 @@ name: Auto Version
 on:
   push:
   pull_request:
-    branches: ["rimuru", "maomao", "tanya", "izutsumi", "bocchi"]
+    branches: ['rimuru', 'maomao', 'tanya', 'izutsumi', 'bocchi']
     types:
       - closed
   workflow_dispatch:
@@ -39,5 +39,5 @@ jobs:
         run: |
           npm version minor -m "${{ github.event.pull_request.base.ref }} %s" --prefix ./Anate
           git add .
-          git commit "automated version bump"
+          git commit -m "automated version bump"
           git push && git push --tags
