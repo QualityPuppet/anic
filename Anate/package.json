@@ -1,6 +1,6 @@
 {
     "name": "anate",
-    "version": "2.3.16",
+    "version": "2.4.1",
     "private": true,
     "type": "module",
     "scripts": {
@@ -15,7 +15,8 @@
         "lint": "run-s \"lint:*\"",
         "lint:eslint": "eslint . --fix --cache",
         "lint:oxlint": "oxlint . --fix",
-        "format": "prettier --write --experimental-cli src/"
+        "format": "prettier --write --experimental-cli src/",
+        "biomereport": "biome lint ./src --reporter=summary --reporter-file=../.lint/report.txt"
     },
     "lint-staged": {
         "**/*.{js,jsx,ts,tsx,vue}": [
