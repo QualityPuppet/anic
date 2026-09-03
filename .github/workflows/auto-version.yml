@@ -34,6 +34,5 @@ jobs:
       # the branch version because that's a release, something that eventful should be done by hand.
       - name: Bump Version
         run: |
-          cd ..
-          npm version minor -m "${{ github.event.pull_request.base.ref }} %s"
+          npm version minor -m "${{ github.event.pull_request.base.ref }} %s" --prefix ./Anate
           git push && git push --tags
