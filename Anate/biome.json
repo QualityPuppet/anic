@@ -1,0 +1,30 @@
+{
+    "$schema": "https://biomejs.dev/schemas/2.5.12/schema.json",
+    "vcs": {
+        "enabled": true,
+        "clientKind": "git",
+        "useIgnoreFile": true
+    },
+    "files": {
+        "includes": ["**", "!!**/dist"]
+    },
+    "formatter": {
+        "enabled": false
+    },
+    "linter": {
+        "enabled": true,
+        "domains": {
+            "vue": "all"
+        },
+        "rules": {
+            "a11y": { "preset": "all" },
+            "complexity": "off",
+            "style": "off",
+            "suspicious": "off",
+            "correctness": "off"
+        }
+    },
+    "assist": {
+        "enabled": false
+    }
+}

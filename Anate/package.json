@@ -1,6 +1,6 @@
 {
     "name": "anate",
-    "version": "2.2.1",
+    "version": "2.4.5",
     "private": true,
     "type": "module",
     "scripts": {
@@ -13,9 +13,10 @@
         "build-only": "vite build",
         "type-check": "vue-tsc --build",
         "lint": "run-s \"lint:*\"",
-        "lint:oxlint": "oxlint . --fix",
         "lint:eslint": "eslint . --fix --cache",
-        "format": "prettier --write --experimental-cli src/"
+        "lint:oxlint": "oxlint . --fix",
+        "format": "prettier --write --experimental-cli src/",
+        "biomereport": "biome lint ./src --reporter=summary --reporter-file=../.lint/report.txt"
     },
     "lint-staged": {
         "**/*.{js,jsx,ts,tsx,vue}": [
@@ -36,6 +37,7 @@
         "@vueuse/core": "^14.4.0",
         "chart.js": "^4.5.1",
         "element-plus": "^2.14.4",
+        "husky": "^9.1.7",
         "json-to-graphql-query": "^2.3.0",
         "localforage": "^1.10.0",
         "pinia": "^4.0.2",

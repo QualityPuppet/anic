@@ -1,7 +1,7 @@
-import { computed, ref, toRaw } from "vue";
-import { defineStore } from "pinia";
-import type { Media } from "@/types/anilist/MediaListCollections";
 import localforage from "localforage";
+import { defineStore } from "pinia";
+import { computed, ref, toRaw } from "vue";
+import type { Media } from "@/types/anilist/MediaListCollections";
 
 export const useRankingStore = defineStore("rankings", () => {
     const rankings = ref<Media[]>();

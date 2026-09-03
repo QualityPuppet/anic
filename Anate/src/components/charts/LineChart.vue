@@ -36,7 +36,7 @@
         plugins: {
             tooltip: {
                 callbacks: {
-                    title: function (context: TooltipItem<"line">[]) {
+                    title: (context: TooltipItem<"line">[]) => {
                         const point = context[0]!.raw as NamedPoint;
                         return `Name: ${point.name} (Score: ${point.x})`;
                     }

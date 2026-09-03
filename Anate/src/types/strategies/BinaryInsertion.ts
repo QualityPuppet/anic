@@ -1,6 +1,6 @@
 import type { NodeDropType } from "element-plus";
-import type { Media } from "../anilist/MediaListCollections";
 import { useRankingStore } from "@/stores/rankings";
+import type { Media } from "../anilist/MediaListCollections";
 import type { SortItem, SortingStrategy } from "./StrategyInterface";
 
 export default class BinaryInsertionStrategy implements SortingStrategy {
@@ -54,17 +54,17 @@ export default class BinaryInsertionStrategy implements SortingStrategy {
         dropType: NodeDropType
     ) {
         const dragged = this.RankedStore.find(
-            (r) => r.title.english == draggedLabel
+            (r) => r.title.english === draggedLabel
         )!;
         this.RankedStore.splice(
-            this.RankedStore.findIndex((r) => r.title.english == draggedLabel),
+            this.RankedStore.findIndex((r) => r.title.english === draggedLabel),
             1
         );
 
         const dropped = this.RankedStore.findIndex(
-            (r) => r.title.english == droppedLabel
+            (r) => r.title.english === droppedLabel
         )!;
-        const shift = dropType == "before" ? 0 : 1;
+        const shift = dropType === "before" ? 0 : 1;
         this.RankedStore.splice(dropped + shift, 0, dragged);
 
         this.nextItem();
