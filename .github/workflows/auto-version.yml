@@ -1,0 +1,32 @@
+name: Production Deployment
+
+on:
+  pull_request:
+    branches: ['rimuru', 'maomao', 'tanya', 'izutsumi', 'bocchi']
+    types:
+      - closed
+
+jobs:
+  version_bump:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.ref }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+
+      # We only want to auto-bump when we merge a minor branch into a major branch
+      # for example when we merge a branch into rimuru (version 2).
+      # When we merge a major branch into the release stream (i.e. `main`), we then want to manually update
+      # the branch version because that's a release, something that eventful should be done by hand.
+      - name: Bump Version
+        run: |
+          npm version minor -m "${{ github.event.pull_request.base.ref }} %s"
+          git push && git push --tags
