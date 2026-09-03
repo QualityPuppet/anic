@@ -1,6 +1,6 @@
 import type { NodeDropType } from "element-plus";
-import type { Media } from "../anilist/MediaListCollections";
 import { useRankingStore } from "@/stores/rankings";
+import type { Media } from "../anilist/MediaListCollections";
 import type { SortItem, SortingStrategy } from "./StrategyInterface";
 
 export default class BinaryInsertionStrategy implements SortingStrategy {

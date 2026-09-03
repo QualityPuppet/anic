@@ -3,9 +3,9 @@ import {
     jsonToGraphQLQuery,
     VariableType
 } from "json-to-graphql-query";
-import { StatusTypes } from "./StatusTypes";
 import localforage from "localforage";
 import { toRaw } from "vue";
+import { StatusTypes } from "./StatusTypes";
 
 export interface IMediaListCollection {
     lists: MediaList[];
