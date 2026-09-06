@@ -67,10 +67,12 @@
                 rankings.value.loadRankings(savedRankings!);
             }
 
-            rankingTreeData.value = rankings.value.RankedStore?.map((r) => ({
-                label: r.title.english,
-                children: []
-            }));
+            rankingTreeData.value = rankings.value.CurrentRankings?.map(
+                (r) => ({
+                    label: r.title.english,
+                    children: []
+                })
+            );
         }
 
         document.addEventListener("keydown", rankingHotkeys);
@@ -127,7 +129,7 @@
         }));
 
         rankings.value = new BinaryInsertionStrategy(list.map((m) => m.media));
-        rankingTreeData.value = rankings.value.RankedStore?.map((r) => ({
+        rankingTreeData.value = rankings.value.CurrentRankings?.map((r) => ({
             label: r.title.english,
             children: []
         }));
@@ -137,7 +139,7 @@
 
     async function score(winner: number) {
         rankings.value?.sort(winner);
-        const rankedStore = rankings.value?.RankedStore;
+        const rankedStore = rankings.value?.CurrentRankings;
         rankingTreeData.value = rankedStore?.map((r) => ({
             label: r.title.english,
             children: []
@@ -171,12 +173,12 @@
         );
         await localforage.setItem(
             "rankings",
-            toRaw(rankings.value?.RankedStore)
+            toRaw(rankings.value?.CurrentRankings)
         );
     };
 
     const progress = computed(() => {
-        const ranked = rankings.value?.RankedStore.length ?? 0;
+        const ranked = rankings.value?.CurrentRankings.length ?? 0;
         const total = rankings.value?.InitialCollection.length ?? 0;
 
         return ranked === 0 || total === 0
@@ -206,7 +208,10 @@
                 </template>
             </el-input>
         </el-row>
-        <el-row v-if="rankings?.Current" justify="space-between">
+        <el-row
+            v-if="!rankings?.Complete && rankings?.Current"
+            justify="space-between"
+        >
             <!-- TODO: Add idle state -->
             <el-col>
                 <el-progress

@@ -1,6 +1,6 @@
 {
     "name": "anate",
-    "version": "2.7.1",
+    "version": "2.7.3",
     "private": true,
     "type": "module",
     "scripts": {
@@ -53,6 +53,8 @@
         "@tsconfig/node24": "^24.0.4",
         "@types/node": "^24.13.3",
         "@vitejs/plugin-vue": "^6.0.8",
+        "@vitest/coverage-v8": "^5.0.0",
+        "@vitest/ui": "^5.0.0",
         "@vue/eslint-config-typescript": "^14.9.0",
         "@vue/tsconfig": "^0.9.1",
         "eslint": "^10.7.0",
