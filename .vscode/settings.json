@@ -1,5 +1,6 @@
 {
   "prettier.useEditorConfig": false,
   "editor.formatOnSave": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode"
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "vitest.rootConfig": "./Anate/vitest.config.ts"
 }
