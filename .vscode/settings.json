@@ -2,7 +2,6 @@
   "prettier.useEditorConfig": false,
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "vitest.commandLine": "cd ./your-sub-folder && npx vitest",
   "vitest.shellType": "terminal",
   "vitest.rootConfig": "./Anate/vitest.config.ts",
   "vitest.workspaceConfig": "./Anata/vitest.config.ts",
