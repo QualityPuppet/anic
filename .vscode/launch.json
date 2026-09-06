@@ -6,7 +6,7 @@
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build", // Ensures your .NET code compiles first
-      "program": "${workspaceFolder}/bin/Debug/net8.0/YourWebApp.dll", 
+      "program": "${workspaceFolder}/bin/Debug/net8.0/YourWebApp.dll",
       "cwd": "${workspaceFolder}",
       "env": {
         "ASPNETCORE_ENVIRONMENT": "Development"
@@ -23,7 +23,7 @@
       "request": "launch",
       "cwd": "${workspaceFolder}",
       // 1. Point runtimeExecutable directly to your NVM npm file
-      "runtimeExecutable": "/home/puppet/.nvm/versions/node/v24.13.1/bin/npm", 
+      "runtimeExecutable": "/home/puppet/.nvm/versions/node/v24.13.1/bin/npm",
       // 2. Pass only the npm arguments here
       "runtimeArgs": ["run", "dev"]
     }

@@ -1,5 +1,5 @@
 export interface RankNode {
-    id: string | number
-    label: string
-    children?: RankNode[]
+    id: string | number;
+    label: string;
+    children?: RankNode[];
 }

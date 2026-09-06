@@ -1,89 +1,120 @@
 import type { NodeDropType } from "element-plus";
-import type { Media } from "../anilist/MediaListCollections";
 import { useRankingStore } from "@/stores/rankings";
+import type { Media } from "../anilist/MediaListCollections";
 import type { SortItem, SortingStrategy } from "./StrategyInterface";
 
-
 export default class BinaryInsertionStrategy implements SortingStrategy {
-    RankedStore: Media[] 
-    InitialCollection: Media[]
+    CurrentRankings: Media[];
+    InitialCollection: Media[];
     Current: BinaryInsertionItem;
     ComparisonMedia: Media;
     Store = useRankingStore();
+    Complete: boolean = false;
 
     constructor(initialCollection: Media[]) {
-        this.RankedStore = [];
+        this.CurrentRankings = [];
         this.InitialCollection = initialCollection;
 
         // This is why C# is just plain superior to typescript.
         // No. InitialCollection is _never_ undefined, it's literally impossible to FORCIBLY pass undefined,
         // let alone accidentally. うるせよ
-        this.RankedStore[0] = initialCollection[0]!;
-        this.Current = this.getUnsortedItem();
+        this.CurrentRankings[0] = initialCollection[0]!;
+        this.Current = this.getUnsortedItem()!;
         this.ComparisonMedia = this.getContestMedia();
     }
 
     loadRankings(rankedStore: Media[]) {
-        if (this.RankedStore.length > 0) {
-            this.RankedStore = rankedStore;
+        if (this.CurrentRankings.length === 0) {
+            this.CurrentRankings = rankedStore;
+            // Avoid borked merges by just restarting the sort.
+            this.nextItem();
+            // TODO: Add an error if we're trying to load over other rankings
         }
-        // Avoid borked merges by just restarting the sort.
-        this.nextItem()
     }
 
     nextItem() {
-        this.Current = this.getUnsortedItem()
+        const next = this.getUnsortedItem();
+        if (!next) {
+            this.Store.rankings = this.CurrentRankings;
+            return;
+        }
+        this.Current = next;
         this.ComparisonMedia = this.getContestMedia();
-        this.Store.rankings = this.RankedStore;
+        this.Store.rankings = this.CurrentRankings;
     }
 
-    getUnsortedItem(): BinaryInsertionItem {
-        const next = this.InitialCollection.find(m => !this.RankedStore.some(r => r.id === m.id))!
-        const high = this.RankedStore.length > 1 ? this.RankedStore.length : 1;
-        return new BinaryInsertionItem(next, high)
+    getUnsortedItem(): BinaryInsertionItem | null {
+        if (this.CurrentRankings.length === this.InitialCollection.length) {
+            this.Complete = true;
+            return null;
+        }
+
+        const next = this.InitialCollection.find(
+            (m) => !this.CurrentRankings.some((r) => r.id === m.id)
+        )!;
+        const high =
+            this.CurrentRankings.length > 1 ? this.CurrentRankings.length : 1;
+        return new BinaryInsertionItem(next, high);
     }
 
     getContestMedia(): Media {
-        return this.RankedStore[this.Current.mid]!;
+        return this.CurrentRankings[this.Current.mid]!;
     }
 
-    shiftItems(draggedLabel: string, droppedLabel: string,  dropType: NodeDropType) {
-        const dragged = this.RankedStore.find(r => r.title.english == draggedLabel)!;
-        this.RankedStore.splice(this.RankedStore.findIndex(r => r.title.english == draggedLabel), 1)
+    // TODO: Update to ID
+    shiftItems(
+        draggedLabel: string,
+        droppedLabel: string,
+        dropType: NodeDropType
+    ) {
+        const dragged = this.CurrentRankings.find(
+            (r) => r.title.english === draggedLabel
+        )!;
+        this.CurrentRankings.splice(
+            this.CurrentRankings.findIndex(
+                (r) => r.title.english === draggedLabel
+            ),
+            1
+        );
 
-        const dropped = this.RankedStore.findIndex(r => r.title.english == droppedLabel)!;
-        const shift = dropType == "before" ? 0 : 1;
-        this.RankedStore.splice(dropped + shift, 0, dragged);
+        const dropped = this.CurrentRankings.findIndex(
+            (r) => r.title.english === droppedLabel
+        )!;
+        const shift = dropType === "before" ? 0 : 1;
+        this.CurrentRankings.splice(dropped + shift, 0, dragged);
 
-        this.nextItem()
+        this.nextItem();
     }
 
     sort(choice: number) {
         if (choice === 1) {
             this.Current.high = this.Current.mid - 1;
             this.Current.insertIndex = this.Current.mid;
-        }
-        else {
+        } else {
             this.Current.low = this.Current.mid + 1;
             this.Current.insertIndex = this.Current.mid + 1;
         }
 
-        this.Current.mid = Math.floor((this.Current.low + this.Current.high) / 2)
+        this.Current.mid = Math.floor(
+            (this.Current.low + this.Current.high) / 2
+        );
 
         if (this.Current.low >= this.Current.high) {
-
-            this.RankedStore.splice(this.Current.insertIndex, 0, this.Current.media)
+            this.CurrentRankings.splice(
+                this.Current.insertIndex,
+                0,
+                this.Current.media
+            );
             this.nextItem();
-        } 
-        else {
+        } else {
             this.ComparisonMedia = this.getContestMedia();
         }
     }
 }
 
-class BinaryInsertionItem implements SortItem  {
-    media: Media
-    high: number
+class BinaryInsertionItem implements SortItem {
+    media: Media;
+    high: number;
     mid: number;
     low: number = 0;
     insertIndex: number = 0;
