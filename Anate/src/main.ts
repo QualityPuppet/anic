@@ -3,7 +3,7 @@ import * as ElementPlusIconsVue from "@element-plus/icons-vue";
 // I don't care about the package size. not my problem.
 import ElementPlus from "element-plus";
 import { createPinia, type StateTree } from "pinia";
-import { createApp } from "vue";
+import { createApp, toRaw } from "vue";
 import App from "./App.vue";
 import router from "./router/index.ts";
 import "element-plus/dist/index.css";
@@ -17,9 +17,13 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 }
 
 const pinia = createPinia();
-pinia.use(({ store }) => {
+pinia.use(async ({ store }) => {
+    await store.initialise();
     store.$subscribe((mutation, state: StateTree) => {
-        localforage.setItem(mutation.storeId, state.getImmutableStore);
+        // TODO: not generic. breaks immediately on second store.
+        // maybe we shouldn't be universally storing state? maybe we can call $subscribe on the actual store dec?
+        // まあ、分からないよおうううう
+        localforage.setItem(mutation.storeId, toRaw(state.rankings));
     });
 });
 

@@ -56,10 +56,10 @@ describe("tests", () => {
             BasicMediaList.splice(0, 0, englishDragTitle);
 
             sortItems(strategy, BasicMediaList);
-            // @ts-expect-error dropType is of type string. blame the el-plus devs.
             strategy.shiftItems(
                 englishDragTitle.title.english,
                 englishDropTitle.title.english,
+                // @ts-expect-error dropType is of type string. blame the el-plus devs.
                 dropType
             );
 

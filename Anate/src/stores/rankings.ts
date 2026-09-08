@@ -3,28 +3,34 @@ import { defineStore } from "pinia";
 import { computed, ref, toRaw } from "vue";
 import type { Media } from "@/types/anilist/MediaListCollections";
 
-export const useRankingStore = defineStore("rankings", () => {
-    const rankings = ref<Media[]>();
-    const loading = ref(true);
+export const useRankingStore = defineStore("rankings", {
+    state: () => ({
+        rankings: ref<Media[]>()
+    }),
+    getters: {
+        loading(state) {
+            return false;
+            //return state.rankings?.length;
+        },
+        getImmutableStore(state) {
+            return state.rankings?.map((r) => toRaw(r));
+        }
+    },
+    actions: {
+        async initialise() {
+            const storedRankings = (await localforage.getItem(
+                "rankings"
+            )) as Media[];
+            console.log(
+                "initialising existing store: " +
+                    (storedRankings && storedRankings.length > 0)
+            );
 
-    localforage
-        .getItem("rankings")
-        .then((r) => {
-            const storedRankings = r as Media[] | null | undefined;
             if (storedRankings) {
-                rankings.value = storedRankings;
+                this.rankings = storedRankings;
             }
-        })
-        .finally(() => {
-            loading.value = false;
-        });
-
-    const getImmutableStore = computed(() => {
-        const rawRankings = rankings.value?.map((m) => toRaw(m));
-        return rawRankings;
-    });
-
-    return { rankings, loading, getImmutableStore };
+        }
+    }
 });
 
 export type RankingStore = ReturnType<typeof useRankingStore>;

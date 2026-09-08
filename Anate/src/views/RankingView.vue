@@ -13,6 +13,7 @@
     import BinaryInsertionStrategy from "@/types/strategies/BinaryInsertion";
     import { WarnTriangleFilled } from "@element-plus/icons-vue";
     import { useRankingStore } from "@/stores/rankings";
+    import { el } from "element-plus/es/locale/index.mjs";
 
     const state = ref<RankingState>({
         InitialCollection: null,
@@ -24,6 +25,7 @@
     const rankings = ref<BinaryInsertionStrategy>();
 
     // this can later be used for updates with an append.
+    // Issue #21 - Version Tanya
     const initialTree = ref<InstanceType<typeof ElTree>>();
     const initialTreeData = ref();
 
@@ -144,11 +146,13 @@
             label: r.title.english,
             children: []
         }));
-        await localforage.setItem("rankings", toRaw(rankedStore));
+        //await localforage.setItem("rankings", toRaw(rankedStore));
     }
 
     async function remove(data: TreeNode) {
         rankingTree.value?.remove(data);
+        // @ts-expect-error the type checking here is kinda wrong
+        rankings.value?.shiftItems(data.label, null, "");
     }
 
     // a and b need to be defined for the event.
@@ -222,51 +226,64 @@
                 />
             </el-col>
             <el-col :span="12">
-                <el-card justify="space-between">
-                    <el-button
-                        @click="
-                            () => {
-                                score(1);
-                            }
-                        "
-                    >
-                        {{ rankings?.Current.media.title.english }}
-                    </el-button>
-                    <el-tooltip>
-                        <template #content>
-                            <span
-                                >Tap the left arrow key to pick this
-                                option</span
-                            >
-                        </template>
-                        <el-icon>
-                            <DArrowLeft />
-                        </el-icon>
-                    </el-tooltip>
+                <el-card>
+                    <!-- would be nice to justify sans the row, but I picked the framework and I'll lie in it -->
+                    <el-row justify="end">
+                        <el-button-group
+                            @click="
+                                () => {
+                                    score(1);
+                                }
+                            "
+                        >
+                            <el-button>
+                                <el-tooltip>
+                                    <template #content>
+                                        <span
+                                            >Tap the left arrow key to pick this
+                                            option</span
+                                        >
+                                    </template>
+                                    <el-icon>
+                                        <DArrowLeft />
+                                    </el-icon>
+                                </el-tooltip>
+                            </el-button>
+                            <el-button>
+                                {{ rankings?.Current.media.title.english }}
+                            </el-button>
+                        </el-button-group>
+                    </el-row>
                 </el-card>
             </el-col>
             <el-col :span="12">
-                <el-card justify="space-between">
-                    <el-tooltip>
-                        <template #content>
-                            <span
-                                >Tap the right arrow key to pick this
-                                option</span
-                            >
-                        </template>
-                        <el-icon>
-                            <DArrowRight />
-                        </el-icon>
-                    </el-tooltip>
-                    <el-button
-                        @click="
-                            () => {
-                                score(2);
-                            }
-                        "
-                    >
-                        {{ rankings?.ComparisonMedia?.title.english }}
-                    </el-button>
+                <el-card>
+                    <el-row justify="start">
+                        <el-button-group
+                            @click="
+                                () => {
+                                    score(1);
+                                }
+                            "
+                        >
+                            <el-button>
+                                {{ rankings?.ComparisonMedia?.title.english }}
+                            </el-button>
+                            <el-button>
+                                <el-tooltip>
+                                    <template #content>
+                                        <span
+                                            >Tap the right arrow key to pick
+                                            this option</span
+                                        >
+                                    </template>
+                                    <el-icon>
+                                        <DArrowRight />
+                                    </el-icon>
+                                </el-tooltip>
+                            </el-button>
+                        </el-button-group>
+                    </el-row>
                 </el-card>
             </el-col>
         </el-row>
@@ -314,7 +331,12 @@
                             <template #default="{ node }">
                                 <div class="editable-tree-node">
                                     <span>{{ node.label }}</span>
-                                    <div v-if="editMode">
+                                    <div
+                                        v-if="
+                                            editMode &&
+                                            rankings!.CurrentRankings.length > 0
+                                        "
+                                    >
                                         <el-button
                                             type="danger"
                                             style="margin-left: 4px !important"
