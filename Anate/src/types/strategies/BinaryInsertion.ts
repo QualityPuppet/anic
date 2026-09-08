@@ -18,13 +18,15 @@ export default class BinaryInsertionStrategy implements SortingStrategy {
         // This is why C# is just plain superior to typescript.
         // No. InitialCollection is _never_ undefined, it's literally impossible to FORCIBLY pass undefined,
         // let alone accidentally. うるせよ
+        // although, TODO: don't auto-populate
         this.CurrentRankings[0] = initialCollection[0]!;
         this.Current = this.getUnsortedItem()!;
         this.ComparisonMedia = this.getContestMedia();
     }
 
     loadRankings(rankedStore: Media[]) {
-        if (this.CurrentRankings.length === 0) {
+        //TODO: More solid check ehre
+        if (this.CurrentRankings.length === 1) {
             this.CurrentRankings = rankedStore;
             // Avoid borked merges by just restarting the sort.
             this.nextItem();
@@ -64,7 +66,7 @@ export default class BinaryInsertionStrategy implements SortingStrategy {
     // TODO: Update to ID
     shiftItems(
         draggedLabel: string,
-        droppedLabel: string,
+        droppedLabel: string | null,
         dropType: NodeDropType
     ) {
         const dragged = this.CurrentRankings.find(
@@ -77,11 +79,15 @@ export default class BinaryInsertionStrategy implements SortingStrategy {
             1
         );
 
-        const dropped = this.CurrentRankings.findIndex(
-            (r) => r.title.english === droppedLabel
-        )!;
-        const shift = dropType === "before" ? 0 : 1;
-        this.CurrentRankings.splice(dropped + shift, 0, dragged);
+        if (droppedLabel) {
+            // TODO: if it works but it's bad, it's bad.
+            // Nothing's more permanent than a temporary fix.
+            const dropped = this.CurrentRankings.findIndex(
+                (r) => r.title.english === droppedLabel
+            )!;
+            const shift = dropType === "before" ? 0 : 1;
+            this.CurrentRankings.splice(dropped + shift, 0, dragged);
+        }
 
         this.nextItem();
     }

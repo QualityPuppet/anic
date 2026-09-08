@@ -14,7 +14,6 @@
         type Point,
         type TooltipItem
     } from "chart.js";
-    import { onMounted } from "vue";
     import { Line } from "vue-chartjs";
 
     const props = defineProps(["distribution"]);
@@ -82,10 +81,6 @@
         Tooltip,
         Legend
     );
-
-    onMounted(() => {
-        console.log(data);
-    });
 </script>
 
 <template>

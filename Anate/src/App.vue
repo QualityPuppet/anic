@@ -1,6 +1,6 @@
 <script setup lang="ts">
     import { RouterLink, RouterView } from "vue-router";
-    import DevView from "@/components/DevView.vue";
+    import DevView from "@/components/DevPanel.vue";
     import { useRankingStore } from "./stores/rankings";
     import getVersion from "./types/versioning";
 

@@ -9,7 +9,7 @@
     Chart.defaults.backgroundColor = "#1d1e1f";
 
     // TODO: Check if rankings exist and give a splash page if not
-    const distribution: Media[] = rankingStore.getImmutableStore!;
+    const distribution: Media[] = rankingStore.rankings!; //;.getImmutableStore!;
 </script>
 
 <template>
@@ -18,6 +18,7 @@
             <div v-if="!distribution">
                 <h1>No anime has been ranked yet :(</h1>
                 <p style="font-size: 10em; text-align: center">🥺</p>
+                <p style="font-size: 10em; text-align: center">👉👈</p>
             </div>
             <LineChart v-if="distribution" :distribution="distribution" />
         </el-row>

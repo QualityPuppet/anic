@@ -11,6 +11,8 @@
     // const isDark = useDark()
     // const toggleDark = useToggle(isDark)
 
+    //const test = await localforage.getItem("test")
+
     const rankingStore = useRankingStore();
 
     async function Debug() {
@@ -41,6 +43,7 @@
                 <el-row>
                     <h1>Backend Data:</h1>
                 </el-row>
+                <el-row> </el-row>
                 <el-row>
                     <pre>{{ state }}</pre>
                 </el-row>
