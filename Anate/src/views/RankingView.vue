@@ -13,7 +13,6 @@
     import BinaryInsertionStrategy from "@/types/strategies/BinaryInsertion";
     import { WarnTriangleFilled } from "@element-plus/icons-vue";
     import { useRankingStore } from "@/stores/rankings";
-    import { el } from "element-plus/es/locale/index.mjs";
 
     const state = ref<RankingState>({
         InitialCollection: null,
