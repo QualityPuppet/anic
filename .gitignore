@@ -1,4 +1,10 @@
+# Anate
 node_modules
 # Lint
 .lint/tmp/
 .lint/report.txt
+/rankings/*
+
+# Ciel
+*/obj/*
+*/bin/*

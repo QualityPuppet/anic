@@ -16,5 +16,12 @@
   },
   "eslint.runtime": "node",
   "eslint.useFlatConfig": true,
-  "eslint.workingDirectories": [{ "mode": "auto" }]
+  "eslint.workingDirectories": [
+    {
+      "mode": "auto"
+    }
+  ],
+  "[csharp]": {
+    "editor.defaultFormatter": "csharpier.csharpier-vs-code"
+  }
 }
